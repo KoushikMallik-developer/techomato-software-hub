@@ -1,0 +1,56 @@
+/* Techomato Photo Studio */
+.photo .pho-name { height: 26px; width: 150px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--ink); padding: 0 6px; font-size: 13px; }
+.photo .pho-name:hover { border-color: var(--line2); } .photo .pho-name:focus { border-color: var(--brand); background: var(--bg); outline: none; }
+.photo .pho-tname { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; min-width: 90px; }
+.photo .stu-opts > * { flex: none; } .photo .stu-opts .stu-num { flex: none; width: 190px; } .photo .stu-opts .stu-num input[type=range] { max-width: 90px; }
+.photo .stu-opts .stu-hint { max-width: 420px; white-space: normal; }
+.pho-vp { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #131316; background-image: radial-gradient(circle at 50% 40%, #1b1b20, #111114); touch-action: none; }
+.stu-center { position: relative; }
+.pho-cv { display: block; position: absolute; inset: 0; touch-action: none; outline: none; }
+.pho-welcome { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(480px, 92%); background: color-mix(in srgb, var(--bg2) 94%, transparent); border: 1px solid var(--line2); border-radius: 12px; padding: 22px 24px; text-align: center; box-shadow: var(--shadow); backdrop-filter: blur(6px); }
+.pho-welcome h2 { margin: 0 0 6px; font-size: 20px; } .pho-welcome p { margin: 0 0 14px; color: var(--ink2); font-size: 13px; }
+.pho-wbtns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+.pho-welcome kbd, .pho-key kbd { background: var(--bg3); border: 1px solid var(--line2); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font: 600 11px/18px ui-monospace, monospace; }
+.photo .fb.pri { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.photo .fb { background: var(--bg3); } .photo .fb:hover:not(:disabled) { background: var(--hover); } .photo .fb.pri:hover:not(:disabled) { background: color-mix(in srgb, var(--brand) 85%, #fff); }
+/* tool column colour swatch */
+.pho-fgbg-mini { position: relative; width: 34px; height: 34px; margin-top: auto; flex: none; }
+.pho-fgbg-mini button { position: absolute; width: 22px; height: 22px; border: 2px solid #fff; border-radius: 3px; padding: 0; box-shadow: 0 0 0 1px #000; }
+.pho-fgbg-mini .fg { left: 0; top: 0; } .pho-fgbg-mini .bg { right: 0; bottom: 0; }
+/* layers */
+.pho-lhead { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--line); flex: none; }
+.pho-lhead .stu-sel { width: 104px; } .pho-lhead .stu-num { flex: 1; } .pho-lhead .stu-nl { min-width: 0; }
+.pho-llist { min-height: 90px; }
+.pho-layer { gap: 5px; padding-right: 6px; } .pho-layer.over { box-shadow: inset 0 2px var(--brand); } .pho-layer.clip { padding-left: 22px; }
+.pho-th { width: 38px; height: 30px; flex: none; border-radius: 3px; border: 1px solid var(--line2); background: repeating-conic-gradient(#cfcfd6 0 25%, #fff 0 50%) 0 0 / 8px 8px; }
+.pho-th.mask { width: 30px; background: #000; } .pho-th.adj { display: grid; place-items: center; background: var(--bg3); color: var(--ink2); }
+.pho-maskbtn { border: 2px solid transparent; border-radius: 4px; padding: 0; background: none; flex: none; line-height: 0; } .pho-maskbtn.on { border-color: var(--brand); }
+.pho-rename { flex: 1; min-width: 0; height: 22px; border: 1px solid var(--brand); border-radius: 3px; background: var(--bg); color: var(--ink); padding: 0 4px; }
+.pho-lfoot { display: flex; align-items: center; gap: 2px; padding: 4px 6px; border-top: 1px solid var(--line); background: var(--bg3); flex: none; }
+.stu-li.future { opacity: .45; }
+/* properties / forms */
+.pho-form { display: flex; flex-direction: column; gap: 6px; } .pho-sec { display: flex; flex-direction: column; gap: 4px; padding-top: 4px; border-top: 1px solid var(--line); } .pho-sec b { font-size: 11.5px; color: var(--ink2); text-transform: uppercase; letter-spacing: .05em; }
+.pho-ta { width: 100%; resize: vertical; min-height: 44px; border: 1px solid var(--line2); border-radius: 5px; background: var(--bg); color: var(--ink); padding: 5px 7px; font: inherit; font-size: 13px; }
+.pho-curves { display: flex; flex-direction: column; gap: 6px; } .pho-chs { display: flex; gap: 4px; align-items: center; } .pho-curve-svg { border: 1px solid var(--line2); border-radius: 4px; touch-action: none; cursor: crosshair; align-self: center; max-width: 100%; }
+.pho-fs { border: 1px solid var(--line); border-radius: 6px; margin: 0 0 8px; padding: 6px 10px 8px; display: flex; flex-direction: column; gap: 6px; } .pho-fs legend { padding: 0 6px; font-weight: 600; }
+/* colour panel */
+.pho-fgbg { display: flex; align-items: center; gap: 10px; }
+.pho-sw { position: relative; width: 52px; height: 46px; flex: none; }
+.pho-sw button { position: absolute; width: 32px; height: 32px; border: 2px solid #fff; border-radius: 4px; padding: 0; box-shadow: 0 0 0 1px #000; } .pho-sw button.on { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pho-fgsw { left: 0; top: 0; z-index: 1; } .pho-bgsw { right: 0; bottom: 0; }
+.pho-sw-btns { display: flex; flex-direction: column; } .pho-hex { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.pho-swatches { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; } .pho-swatches button { aspect-ratio: 1; border: 1px solid var(--line2); border-radius: 3px; padding: 0; }
+.pho-swatches button:hover { outline: 2px solid var(--brand); }
+/* navigator & histogram */
+.pho-nav { position: relative; align-self: center; border: 1px solid var(--line2); cursor: pointer; background: repeating-conic-gradient(#cfcfd6 0 25%, #fff 0 50%) 0 0 / 10px 10px; touch-action: none; }
+.pho-nav canvas { display: block; width: 100%; height: 100%; } .pho-nav-box { position: absolute; border: 2px solid #ff3b6b; box-shadow: 0 0 0 1px rgba(0,0,0,.5); pointer-events: none; }
+.pho-histc { width: 100%; height: 80px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
+/* dialogs */
+.photo .fx-modal { background: var(--card); color: var(--ink); } .photo .fx-modal .fi { width: 100%; height: 30px; border: 1px solid var(--line2); border-radius: 5px; background: var(--bg); color: var(--ink); padding: 0 8px; }
+.photo .fx-modal .foot { display: flex; gap: 8px; align-items: center; margin-top: 14px; }
+.pho-dlg { display: flex; flex-direction: column; gap: 10px; }
+.pho-anchor { display: grid; grid-template-columns: repeat(3, 22px); gap: 3px; } .pho-anchor button { width: 22px; height: 22px; border: 1px solid var(--line2); border-radius: 3px; background: var(--bg3); padding: 0; } .pho-anchor button.on { background: var(--brand); border-color: var(--brand); }
+.pho-effect { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 14px; align-items: start; } .pho-effect-form { max-height: 60vh; overflow: auto; padding-right: 4px; }
+.pho-prev { border: 1px solid var(--line2); border-radius: 6px; display: grid; place-items: center; min-height: 200px; overflow: hidden; } .pho-prev.checker { background: repeating-conic-gradient(#cfcfd6 0 25%, #fff 0 50%) 0 0 / 12px 12px; } .pho-prev canvas { max-width: 100%; max-height: 52vh; }
+.pho-keys { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 22px; } .pho-keys h4 { margin: 8px 0 4px; color: var(--ink2); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; } .pho-key { display: flex; align-items: center; gap: 10px; font-size: 12.5px; padding: 2px 0; } .pho-key kbd { min-width: 38px; text-align: center; }
+@media (max-width: 760px) { .pho-effect { grid-template-columns: 1fr; } .pho-keys { grid-template-columns: 1fr; } .photo .stu-opts .stu-num { width: 150px; } }

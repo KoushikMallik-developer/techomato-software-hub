@@ -1,0 +1,52 @@
+/* Techomato 3D Studio */
+.threed .fb { background: var(--bg3); } .threed .fb:hover:not(:disabled) { background: var(--hover); }
+.threed .fb.pri { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.threed .fx-modal { background: var(--card); color: var(--ink); }
+.threed .t3-fi { width: 100%; height: 26px; border: 1px solid var(--line2); border-radius: 5px; background: var(--bg); color: var(--ink); padding: 0 8px; font: inherit; }
+.threed .stu-ib.big { width: 36px; height: 34px; border-radius: 8px; } .threed .stu-ib.big.on { background: var(--brand); color: var(--brand-ink); }
+.threed .stu-ib.sm { width: 22px; height: 22px; flex: none; }
+.threed .stu-btn.on { background: var(--brand-soft); border-color: var(--brand); color: #fff; } .threed .stu-btn.rec.on { background: #7a1d22; border-color: #e5484d; }
+.threed .stu-btn.pri { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.threed .aud-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.threed .aud-keys { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 12.5px; } .threed .aud-keys > div { display: flex; gap: 8px; align-items: baseline; } .threed .aud-keys kbd { background: var(--bg3); border: 1px solid var(--line2); border-radius: 4px; padding: 1px 6px; font: 11px ui-monospace, Consolas, monospace; white-space: nowrap; color: var(--ink); }
+.threed .aud-dlg { display: flex; flex-direction: column; gap: 10px; }
+.threed .vid-prog { height: 10px; background: var(--bg); border: 1px solid var(--line2); border-radius: 6px; overflow: hidden; } .threed .vid-prog i { display: block; height: 100%; background: var(--brand); }
+.threed .ellip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.threed .spacer { flex: 1; }
+
+.t3-head { display: flex; align-items: center; gap: 8px; padding: 4px 10px; background: var(--bg3); border-bottom: 1px solid var(--line); flex: none; flex-wrap: wrap; min-height: 40px; font-size: 12.5px; }
+.t3-sel { display: inline-flex; align-items: center; gap: 6px; color: var(--ink2); }
+.t3-seg { display: inline-flex; border: 1px solid var(--line2); border-radius: 6px; overflow: hidden; background: var(--bg); }
+.t3-seg button { height: 26px; min-width: 30px; padding: 0 10px; border: 0; border-right: 1px solid var(--line2); background: transparent; color: var(--ink2); font-size: 12px; display: inline-grid; place-items: center; }
+.t3-seg button:last-child { border-right: 0; } .t3-seg button:hover { background: var(--hover); color: var(--ink); } .t3-seg button.on { background: var(--brand); color: var(--brand-ink); font-weight: 700; }
+
+.t3-body { min-height: 0; } .t3-center { overflow: hidden; min-width: 0; }
+.t3-vp { position: relative; flex: 1; min-height: 160px; background: #1a1c20; overflow: hidden; }
+.t3-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; touch-action: none; cursor: crosshair; }
+.t3-info { position: absolute; left: 12px; top: 10px; pointer-events: none; font-size: 12.5px; color: #e8e8ee; text-shadow: 0 1px 2px #000; display: flex; flex-direction: column; gap: 2px; } .t3-info span { color: #c4c4cc; }
+.t3-nav { position: absolute; right: 12px; top: 10px; width: 96px; height: 96px; cursor: pointer; }
+.t3-navb { position: absolute; right: 12px; top: 112px; width: 96px; display: flex; justify-content: center; gap: 6px; }
+.t3-navb button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line2); background: rgba(40,40,46,.85); color: var(--ink); display: grid; place-items: center; padding: 0; cursor: grab; touch-action: none; } .t3-navb button:hover { background: var(--hover); }
+.t3-box { position: absolute; border: 1px dashed #fff; background: rgba(255,255,255,.08); pointer-events: none; }
+.t3-brush { position: absolute; border: 1.5px solid rgba(255,255,255,.85); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 0 1px rgba(0,0,0,.4); }
+.t3-hint { position: absolute; left: 0; right: 0; bottom: 0; padding: 4px 12px; font-size: 11.5px; color: #b8b8c2; background: linear-gradient(transparent, rgba(0,0,0,.55)); pointer-events: none; }
+.t3-op { position: absolute; left: 12px; bottom: 30px; width: 230px; background: rgba(32,32,38,.94); border: 1px solid var(--line2); border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow); font-size: 12.5px; }
+.t3-err { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; padding: 30px; background: #1a1c20; color: #ddd; z-index: 5; } .t3-err h3 { margin: 0 0 6px; color: var(--brand); }
+
+.t3-tl { flex: none; background: #151618; border-top: 1px solid var(--line2); display: flex; flex-direction: column; }
+.t3-tlbar { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--bg2); flex-wrap: wrap; }
+.t3-fr { display: inline-flex; align-items: center; gap: 5px; color: var(--ink2); font-size: 11.5px; } .t3-fr input { width: 58px; height: 24px; border: 1px solid var(--line2); border-radius: 5px; background: var(--bg); color: var(--ink); padding: 0 6px; font: 12px ui-monospace, Consolas, monospace; }
+.t3-track { position: relative; height: 92px; margin: 0 14px; cursor: ew-resize; overflow: hidden; touch-action: none; border-left: 1px solid var(--line2); border-right: 1px solid var(--line2); }
+.t3-track > i { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.07); font-style: normal; } .t3-track > i span { position: absolute; top: 2px; left: 4px; font: 10px ui-monospace, Consolas, monospace; color: var(--ink3); }
+.t3-ph { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--brand); pointer-events: none; z-index: 3; } .t3-ph i { position: absolute; top: 0; left: -5px; width: 12px; height: 12px; background: var(--brand); border-radius: 2px 2px 6px 6px; }
+.t3-keyrow { position: absolute; left: 0; right: 0; height: 16px; } .t3-keyrow em { position: absolute; left: 6px; top: 1px; font-size: 10px; color: var(--ink3); font-style: normal; white-space: nowrap; z-index: 1; }
+.t3-keyrow b { position: absolute; top: 3px; width: 9px; height: 9px; background: #ffd37a; border: 1px solid #5a3b00; transform: translateX(-50%) rotate(45deg); z-index: 2; } .t3-keyrow b.on { background: #fff; border-color: var(--brand); }
+
+.t3-right { overflow: hidden; }
+.t3-out { list-style: none; margin: 0; padding: 0; max-height: 170px; overflow: auto; }
+.t3-out li { display: flex; align-items: center; gap: 6px; padding: 3px 6px 3px 10px; font-size: 12.5px; cursor: default; color: var(--ink); } .t3-out li:hover { background: var(--hover); }
+.t3-out li.sel { background: var(--sel); } .t3-out li.act { background: var(--brand-soft); box-shadow: inset 2px 0 0 var(--brand); } .t3-out li .ellip { flex: 1; }
+.t3-props { flex: 1; min-height: 0; overflow-y: auto; }
+.t3-brushes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+.t3-status { display: flex; align-items: center; gap: 16px; padding: 0 12px; height: 24px; flex: none; background: var(--bg2); border-top: 1px solid var(--line); font-size: 11.5px; color: var(--ink2); }
+@media (max-width: 900px) { .stu-side.wide.t3-right { width: 260px; } .t3-nav, .t3-navb { display: none; } }

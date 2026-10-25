@@ -1,0 +1,134 @@
+/* ============ Techomato Docs ============ */
+.tbbreak { flex-basis: 100%; height: 0; }
+.tblabel { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); margin: 0 6px 0 4px; }
+.tbtxt { font-size: 0.78rem; font-weight: 600; }
+
+.docscroll {
+  flex: 1; min-height: 0; overflow: auto; position: relative;
+  background: #e9ecf1; padding: 22px 24px 60px;
+  display: flex; flex-direction: column; align-items: center;
+}
+@media (prefers-color-scheme: dark) { .docscroll { background: #0f141b; } }
+.docsheet {
+  position: relative; flex: none; box-sizing: border-box; margin: 0 auto;
+  background: #fff; color: #111; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 8px 30px rgba(0, 0, 0, 0.12);
+  font-family: Calibri, Carlito, 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.5;
+}
+.docsheet.pageless { width: min(100%, 900px) !important; min-height: 70vh; }
+.docedit, .docedit:focus, .docedit:focus-visible { outline: none; }
+.docedit { min-height: 1.5em; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: anywhere; tab-size: 4; }
+.docedit > *:first-child { margin-top: 0; }
+.docedit p { margin: 0 0 0.6em; min-height: 1.2em; }
+.docedit h1, .docedit h2, .docedit h3, .docedit h4, .docedit h5, .docedit h6 { margin: 1em 0 0.4em; line-height: 1.25; font-weight: 700; }
+.docedit h1 { font-size: 20pt; } .docedit h2 { font-size: 16pt; } .docedit h3 { font-size: 13pt; }
+.docedit h4 { font-size: 11pt; } .docedit h5 { font-size: 10pt; } .docedit h6 { font-size: 10pt; font-weight: 600; font-style: italic; }
+.docedit .doc-title { font-size: 26pt; font-weight: 700; line-height: 1.2; margin: 0 0 0.2em; }
+.docedit .doc-subtitle { font-size: 14pt; color: #5c6670; margin: 0 0 1em; }
+.docedit ul, .docedit ol { margin: 0 0 0.6em; padding-left: 1.8em; }
+.docedit li { margin: 0.1em 0; }
+.docedit blockquote { margin: 0.8em 0; padding: 0.1em 0 0.1em 1em; border-left: 3px solid #b8c0cc; color: #475161; }
+.docedit pre { background: #f2f4f7; border: 1px solid #e0e4ea; border-radius: 6px; padding: 10px 12px; font: 10pt Consolas, 'Courier New', monospace; white-space: pre-wrap; margin: 0.6em 0; }
+.docedit a { color: #1a56b0; text-decoration: underline; }
+.docedit img { max-width: 100%; height: auto; cursor: default; vertical-align: bottom; }
+.docedit hr { border: 0; border-top: 1px solid #aab; margin: 1em 0; }
+.docedit hr.page-break { border-top: 2px dashed #99a; margin: 1.6em 0; position: relative; overflow: visible; }
+.docedit hr.page-break::after { content: 'Page break'; position: absolute; left: 50%; top: -0.75em; transform: translateX(-50%); background: #fff; padding: 0 8px; font-size: 8pt; color: #889; }
+.docedit sup, .docedit sub { line-height: 0; }
+
+.docedit table.doctable { border-collapse: collapse; margin: 0.6em 0; width: 100%; table-layout: auto; }
+.docedit table.doctable td, .docedit table.doctable th { border: 1px solid #98a2b3; padding: 4px 8px; vertical-align: top; min-width: 36px; }
+.docedit table.doctable th { background: #eef1f5; font-weight: 700; text-align: left; }
+.docedit table.doctable[data-borders='none'] td, .docedit table.doctable[data-borders='none'] th { border-color: transparent; }
+.docedit table.doctable[data-borders='outer'] td, .docedit table.doctable[data-borders='outer'] th { border-color: transparent; }
+.docedit table.doctable[data-borders='outer'] { outline: 1px solid #98a2b3; }
+.docedit table.doctable[data-borders='rows'] td, .docedit table.doctable[data-borders='rows'] th { border-left-color: transparent; border-right-color: transparent; }
+.docedit table.doctable td p, .docedit table.doctable th p { margin: 0; }
+
+.docedit ul.checklist { list-style: none; padding-left: 4px; }
+.docedit ul.checklist li { position: relative; padding-left: 28px; }
+.docedit ul.checklist li::before {
+  content: ''; position: absolute; left: 4px; top: 0.28em; width: 15px; height: 15px; border: 2px solid #7a8594; border-radius: 4px; background: #fff; cursor: pointer; box-sizing: border-box;
+}
+.docedit ul.checklist li[data-done='true']::before { background: #2f855a; border-color: #2f855a; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E"); }
+.docedit ul.checklist li[data-done='true'] { color: #7a8594; text-decoration: line-through; }
+
+.docedit .toc-title { font-size: 16pt; margin: 0 0 0.4em; }
+.docedit .toc-item { margin: 0 0 0.2em; }
+.docedit .toc-l2 { padding-left: 1.2em; } .docedit .toc-l3 { padding-left: 2.4em; }
+.docedit .toc-item a { color: inherit; text-decoration: none; }
+.docedit .toc-item a:hover { text-decoration: underline; }
+
+.docedit .cmt { background: rgba(255, 213, 79, 0.45); border-bottom: 2px solid #f1b400; }
+.docedit .cmt.flash { background: rgba(255, 170, 0, 0.8); }
+.docedit::selection, .docedit *::selection { background: #b3d4fc; color: inherit; }
+::highlight(find-all) { background-color: #ffe58a; color: #111; }
+::highlight(find-current) { background-color: #ff9d3a; color: #111; }
+
+.dochead, .docfoot { position: absolute; left: 0; right: 0; text-align: center; font-size: 9pt; color: #8a94a3; pointer-events: none; user-select: none; }
+.docfoot { display: flex; justify-content: space-between; padding: 0 0.6in; }
+.docfoot .pn { opacity: 0.8; }
+
+/* floating bars */
+.floatbar { position: absolute; z-index: 30; display: flex; align-items: center; gap: 2px; padding: 3px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(10, 20, 40, 0.22); font-size: 0.78rem; max-width: calc(100% - 12px); flex-wrap: wrap; }
+.floatbar button { border: 0; background: transparent; color: inherit; font: inherit; padding: 3px 7px; border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; }
+.floatbar button:hover { background: var(--surface-2); }
+.floatbar .lnk { color: var(--focus); padding: 0 6px; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
+.floatbar .sep { height: 16px; margin: 0 3px; }
+.imgsel { position: absolute; z-index: 20; outline: 2px solid #2b6cb0; pointer-events: none; }
+.imgh { position: absolute; right: -6px; bottom: -6px; width: 12px; height: 12px; background: #2b6cb0; border: 2px solid #fff; border-radius: 3px; cursor: nwse-resize; pointer-events: auto; }
+
+.ctxmenu { position: fixed; z-index: 150; min-width: 220px; }
+
+/* find bar */
+.findbar { position: absolute; right: 22px; top: 8px; z-index: 40; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 28px rgba(10, 20, 40, 0.22); padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; }
+.fb-row { display: flex; align-items: center; gap: 4px; }
+.fb-in { width: 190px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-size: 0.86rem; }
+.fb-in.bad { border-color: var(--danger); }
+.fb-count { min-width: 64px; text-align: center; font-size: 0.78rem; color: var(--ink-soft); }
+.fb-opt { border: 1px solid transparent; background: transparent; color: var(--ink-soft); font: inherit; font-size: 0.78rem; font-weight: 700; padding: 3px 6px; border-radius: 5px; cursor: pointer; }
+.fb-opt:hover { background: var(--surface-2); }
+.fb-opt.on { background: var(--surface-2); border-color: var(--ink-soft); color: var(--ink); }
+
+/* side panels */
+.outline, .cmtlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.outline button { width: 100%; text-align: left; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 0.86rem; padding: 4px 6px; border-radius: 5px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.outline button:hover { background: var(--surface-2); }
+.cmtlist li { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--bg); }
+.cmtlist li.resolved { opacity: 0.55; }
+.cmtlist p { margin: 4px 0; font-size: 0.88rem; white-space: pre-wrap; }
+.cmtq { border: 0; background: transparent; color: var(--ink-soft); font: inherit; font-size: 0.78rem; font-style: italic; text-align: left; cursor: pointer; padding: 0; border-left: 3px solid #f1b400; padding-left: 6px; }
+.cmtmeta { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+.cmtmeta small { color: var(--ink-soft); }
+
+/* pickers and dialogs */
+.tpicker { padding: 6px; }
+.tgrid { display: grid; grid-template-columns: repeat(8, 18px); gap: 2px; }
+.tgrid button { width: 18px; height: 18px; border: 1px solid var(--line); background: var(--bg); border-radius: 2px; padding: 0; cursor: pointer; }
+.tgrid button.on { background: #9ec5f5; border-color: #2b6cb0; }
+.tlabel { text-align: center; font-size: 0.8rem; color: var(--ink-soft); margin-top: 6px; }
+.symtabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.symgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 4px; }
+.symgrid button { height: 38px; font-size: 1.15rem; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 6px; cursor: pointer; }
+.symgrid button:hover { background: var(--surface-2); border-color: var(--ink-soft); }
+.statstable { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.statstable th, .statstable td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+.statstable td { text-align: right; font-variant-numeric: tabular-nums; }
+.statstable thead th { color: var(--ink-soft); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; text-align: right; }
+
+@media (max-width: 760px) {
+  .docscroll { padding: 10px 6px 40px; align-items: flex-start; }
+  .findbar { right: 6px; left: 6px; }
+  .fb-in { width: 100%; min-width: 0; }
+}
+
+@media print {
+  .docscroll { overflow: visible !important; padding: 0 !important; background: #fff !important; display: block !important; }
+  .docsheet { width: auto !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; zoom: 1 !important; background-image: none !important; background-color: #fff !important; }
+  .docsheet.multicol { padding: 0 !important; }
+  .dochead, .docfoot, .floatbar, .imgsel, .findbar { display: none !important; }
+  .docedit .cmt { background: none; border: 0; }
+  .docedit hr.page-break { break-after: page; border: 0; margin: 0; }
+  .docedit hr.page-break::after { display: none; }
+  .docedit table.doctable tr { break-inside: avoid; }
+  .docedit img { break-inside: avoid; }
+}

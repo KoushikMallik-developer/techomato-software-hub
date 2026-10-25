@@ -1,0 +1,48 @@
+/* Techomato Audio Studio */
+.audio .aud-name { height: 26px; width: 170px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--ink); padding: 0 6px; font-size: 13px; } .audio .aud-name:hover { border-color: var(--line2); } .audio .aud-name:focus { border-color: var(--brand); background: var(--bg); outline: none; }
+.audio .fb { background: var(--bg3); } .audio .fb:hover:not(:disabled) { background: var(--hover); } .audio .fb.pri { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.audio .fx-modal { background: var(--card); color: var(--ink); } .audio .fx-modal .fi, .aud-fi { width: 100%; height: 28px; border: 1px solid var(--line2); border-radius: 5px; background: var(--bg); color: var(--ink); padding: 0 8px; } .audio .fx-modal .foot { display: flex; gap: 8px; align-items: center; margin-top: 14px; }
+.aud-transport { gap: 6px !important; padding: 4px 10px; }
+.stu-ib.big { width: 36px; height: 34px; border-radius: 8px; } .stu-ib.big.on { background: var(--brand); color: var(--brand-ink); } .stu-ib.big.rec { color: #ff5a5a; } .stu-ib.big.rec.on { background: #e5383b; color: #fff; animation: audpulse 1.2s infinite; }
+@keyframes audpulse { 50% { box-shadow: 0 0 0 4px rgba(229,56,59,.35); } }
+.aud-clock { font: 600 22px/1 ui-monospace, 'SF Mono', Consolas, monospace; background: #0d0f10; color: var(--brand); border: 1px solid var(--line2); border-radius: 6px; padding: 6px 12px; min-width: 124px; text-align: center; letter-spacing: .02em; margin: 0 6px; }
+.aud-mvol { width: 110px; }
+.aud-meter { position: relative; display: inline-block; width: 72px; height: 8px; background: #101214; border-radius: 4px; overflow: hidden; border: 1px solid var(--line2); flex: none; }
+.aud-meter i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #2fd16b 0 65%, #ffd23f 80%, #ff4d4d); } .aud-meter b { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; left: 0; opacity: .8; }
+.aud-meter.v { width: 10px; height: 150px; } .aud-meter.v i { top: auto; width: 100%; height: 0; background: linear-gradient(0deg, #2fd16b 0 65%, #ffd23f 80%, #ff4d4d); } .aud-meter.v b { left: 0; right: 0; top: auto; width: auto; height: 2px; bottom: 0; }
+/* timeline */
+.audio .stu-center { overflow: hidden; }
+.aud-scroll { position: relative; flex: 1; min-height: 0; overflow: auto; background: #151618; }
+.aud-content { position: relative; min-height: 100%; }
+.aud-ruler-row { display: flex; position: sticky; top: 0; z-index: 8; background: var(--bg2); border-bottom: 1px solid var(--line2); }
+.aud-corner { position: sticky; left: 0; z-index: 9; background: var(--bg2); border-right: 1px solid var(--line2); display: flex; align-items: center; padding: 0 8px; flex: none; }
+.aud-ruler { position: relative; height: 100%; cursor: text; flex: none; overflow: hidden; }
+.aud-ruler i { position: absolute; bottom: 0; width: 1px; height: 6px; background: var(--ink3); } .aud-ruler i.maj { height: 14px; background: var(--ink2); } .aud-ruler i span { position: absolute; left: 4px; top: -14px; font: 10.5px ui-monospace, monospace; color: var(--ink2); white-space: nowrap; font-style: normal; }
+.aud-loopbar { position: absolute; top: 0; height: 5px; background: var(--brand); opacity: .85; } .aud-marker { position: absolute; top: 0; font: 600 10px/12px system-ui; color: #111; background: #ffd23f; padding: 0 4px; border-radius: 0 3px 3px 0; white-space: nowrap; cursor: pointer; }
+.aud-lanes { position: relative; }
+.aud-trk { display: flex; border-bottom: 1px solid #0c0d0e; position: relative; }
+.aud-th { position: sticky; left: 0; z-index: 6; flex: none; background: var(--bg2); border-right: 1px solid var(--line2); border-left: 4px solid var(--tc); padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; justify-content: center; } .aud-trk.sel .aud-th { background: var(--bg3); }
+.aud-th1, .aud-th2 { display: flex; align-items: center; gap: 5px; min-width: 0; } .aud-tn { flex: 1; font-weight: 600; font-size: 12.5px; }
+.aud-tb { width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--line2); background: var(--bg); color: var(--ink2); font: 700 11px/1 system-ui; padding: 0; flex: none; } .aud-tb.on.m { background: #e8a31a; color: #111; border-color: #e8a31a; } .aud-tb.on.s { background: #2fd16b; color: #04210f; border-color: #2fd16b; } .aud-tb.on.r { background: #e5383b; color: #fff; border-color: #e5383b; }
+.aud-th2 input[type=range] { flex: 1; min-width: 0; height: 4px; } .aud-db { font: 10.5px ui-monospace, monospace; color: var(--ink3); width: 34px; text-align: right; flex: none; } .aud-pl { font-size: 11px; color: var(--ink3); width: 22px; flex: none; }
+.aud-lane { position: relative; flex: none; background: repeating-linear-gradient(90deg, transparent 0 79px, rgba(255,255,255,.035) 79px 80px); cursor: text; }
+.aud-trk:nth-child(even) .aud-lane { background-color: rgba(255,255,255,.012); }
+.aud-hint { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink3); font-size: 12px; pointer-events: none; }
+.aud-clip { position: absolute; top: 4px; bottom: 4px; border-radius: 6px; background: color-mix(in srgb, var(--tc) 55%, #101214); border: 1px solid color-mix(in srgb, var(--tc) 85%, #fff); overflow: hidden; cursor: grab; touch-action: none; outline: none; }
+.aud-clip.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--tc); z-index: 3; } .aud-clip.drag { opacity: .8; cursor: grabbing; z-index: 4; }
+.aud-clip-h { height: 16px; font-size: 11px; line-height: 16px; padding: 0 6px; background: color-mix(in srgb, var(--tc) 85%, #000); color: #fff; font-weight: 600; pointer-events: none; }
+.aud-wave { display: block; pointer-events: none; }
+.aud-fade { position: absolute; top: 16px; fill: rgba(0,0,0,.45); pointer-events: none; } .aud-fade.in { left: 0; } .aud-fade.out { right: 0; }
+.aud-fh { position: absolute; top: 17px; width: 9px; height: 9px; background: #fff; border-radius: 2px; transform: translateX(-3px); pointer-events: none; box-shadow: 0 0 0 1px #000; } .aud-fh.r { transform: translateX(3px); }
+.aud-clip::before, .aud-clip::after { content: ''; position: absolute; top: 0; bottom: 0; width: 7px; z-index: 2; cursor: ew-resize; } .aud-clip::before { left: 0; } .aud-clip::after { right: 0; }
+.aud-range { position: absolute; top: 0; bottom: 0; background: rgba(47,209,176,.16); border-left: 1px solid var(--brand); border-right: 1px solid var(--brand); pointer-events: none; z-index: 5; }
+.aud-ph { position: absolute; top: 0; bottom: 0; width: 0; z-index: 7; pointer-events: none; will-change: transform; } .aud-ph i { position: absolute; left: -1px; top: 0; bottom: 0; width: 2px; background: #ff4d6d; } .aud-ph::before { content: ''; position: absolute; left: -6px; top: 0; border: 6px solid transparent; border-top-color: #ff4d6d; border-bottom: 0; }
+/* panels */
+.aud-stats { display: flex; gap: 10px; flex-wrap: wrap; font: 11.5px ui-monospace, monospace; color: var(--ink2); } .aud-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.aud-rack { display: flex; flex-direction: column; gap: 8px; } .aud-fx { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; background: var(--bg); } .aud-fx.on { border-color: color-mix(in srgb, var(--brand) 60%, var(--line)); } .aud-fxh { font-weight: 600; } .aud-fxb { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+.aud-spec { width: 100%; background: #0d0f10; border: 1px solid var(--line); border-radius: 6px; display: block; }
+.aud-mixer { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; } .aud-strip { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 74px; flex: none; padding: 8px 4px; background: var(--bg); border: 1px solid var(--line); border-top: 3px solid var(--tc, var(--brand)); border-radius: 8px; } .aud-strip.master { --tc: #fff; }
+.aud-sn { font-size: 11.5px; font-weight: 600; max-width: 100%; } .aud-faders { display: flex; gap: 6px; align-items: flex-end; height: 150px; }
+.aud-vf { writing-mode: vertical-lr; direction: rtl; width: 22px; height: 150px; }
+.aud-dlg { display: flex; flex-direction: column; gap: 10px; } .aud-keys { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; } .aud-keys div { display: flex; gap: 10px; align-items: center; font-size: 12.5px; } .aud-keys kbd { background: var(--bg3); border: 1px solid var(--line2); border-bottom-width: 2px; border-radius: 4px; padding: 0 6px; font: 600 11px/18px ui-monospace, monospace; min-width: 50px; text-align: center; }
+@media (max-width: 760px) { .aud-keys { grid-template-columns: 1fr; } .aud-clock { font-size: 17px; min-width: 100px; } }

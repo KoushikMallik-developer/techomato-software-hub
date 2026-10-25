@@ -1,0 +1,24 @@
+// Date helpers shared by Calendar, To Do, Habits, Money, Planner.
+export const pad = (n) => String(n).padStart(2, '0');
+export const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+export const parseYmd = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+export const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+export const todayKey = () => ymd(new Date());
+export const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+export const addMonths = (d, n) => { const x = new Date(d.getFullYear(), d.getMonth() + n, 1); const dim = daysInMonth(x.getFullYear(), x.getMonth()); x.setDate(Math.min(d.getDate(), dim)); x.setHours(d.getHours(), d.getMinutes(), 0, 0); return x; };
+export const addYears = (d, n) => addMonths(d, n * 12);
+export const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+export const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+export const startOfDay = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+export const startOfWeek = (d, first = 0) => { const x = startOfDay(d); x.setDate(x.getDate() - ((x.getDay() - first + 7) % 7)); return x; };
+export const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
+export const diffDays = (a, b) => Math.round((startOfDay(b) - startOfDay(a)) / 86400000);
+export const isoWeek = (d) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const n = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - n); const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - y0) / 86400000 + 1) / 7); };
+export const fmtDate = (d, o = { month: 'short', day: 'numeric' }) => d.toLocaleDateString(undefined, o);
+export const fmtTime = (d, h12 = true) => d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: h12 });
+export const MONTHS = Array.from({ length: 12 }, (_, i) => new Date(2021, i, 1).toLocaleDateString(undefined, { month: 'long' }));
+export const weekdayNames = (first = 0, style = 'short') => Array.from({ length: 7 }, (_, i) => new Date(2021, 7, 1 + ((i + first) % 7)).toLocaleDateString(undefined, { weekday: style }));
+export const relDay = (d) => { const n = diffDays(new Date(), d); if (n === 0) return 'Today'; if (n === 1) return 'Tomorrow'; if (n === -1) return 'Yesterday'; return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }); };
+export const minutesOf = (d) => d.getHours() * 60 + d.getMinutes();
+export const hhmm = (min) => `${pad(Math.floor(min / 60) % 24)}:${pad(min % 60)}`;
+export const parseHHMM = (s) => { const [h, m] = (s || '0:0').split(':').map(Number); return (h || 0) * 60 + (m || 0); };
