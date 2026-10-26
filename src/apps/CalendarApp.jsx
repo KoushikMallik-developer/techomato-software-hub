@@ -137,7 +137,7 @@ export default function CalendarApp() {
   const miniFrom = startOfWeek(startOfMonth(mini), ws); const miniTo = addDays(miniFrom, 42);
   const dots = useMemo(() => { const set = new Set(); rangeOccurrences(data, miniFrom, miniTo, holidayEvents).forEach((o) => { for (let d = startOfDay(o.start); d < o.endExcl && d < miniTo; d = addDays(d, 1)) set.add(ymd(d)); }); return set; }, [data, mini, holidayEvents]); // eslint-disable-line react-hooks/exhaustive-deps
   const calOf = (id) => data.cals.find((c) => c.id === id);
-  const colorOf = (o) => (o.holiday ? '#8764b8' : o.color || (calOf(o.calId) || { color: '#0f6cbd' }).color);
+  const colorOf = (o) => (o.holiday ? '#8764b8' : o.color || (calOf(o.calId) || { color: '#C8381F' }).color);
 
   /* ---- actions ---- */
   const askScope = (verb) => new Promise((res) => setScope({ verb, res }));
@@ -236,7 +236,7 @@ export default function CalendarApp() {
   const moreFor = (d, e) => { const dayStart = startOfDay(d); const list = occs.filter((o) => o.start < addDays(dayStart, 1) && o.endExcl > dayStart); showCtx(e, list.map((o) => ({ label: `${o.allDay ? 'All day' : fmtT(o.start, S.h12)}  ${o.title || '(No title)'}`, icon: 'calendarIco', onClick: () => openOcc(o, { clientX: e.clientX, clientY: e.clientY }) }))); };
 
   return (
-    <div className="fx cal" style={{ '--brand': '#0f6cbd' }}>
+    <div className="fx cal" style={{ '--brand': '#C8381F' }}>
       <AppBar id="calendar" name="Techomato Calendar" status={meta.status} backup={{ name: 'calendar', get: () => meta.ref.current, set: (v) => setData(() => migrate(v)), blank: blankData }}
         center={<div className="cal-sw"><label className="fx-search"><input ref={searchRef} type="search" placeholder="Search events" aria-label="Search events" value={q} onChange={(e) => setQ(e.target.value)} /><Icon name="search" size={15} /></label>
           {q.trim() && <div className="fx-pop cal-results" style={{ left: 0, right: 0 }}>{results.length === 0 ? <div className="fx-note">No matching events.</div> : results.map((ev) => <button key={ev.id} className="fx-row" onClick={() => { go(parseLocal(ev.start)); setQ(''); setView(view === 'month' ? 'month' : 'week'); }}><i className="cal-dotc" style={{ background: ev.color || (calOf(ev.calId) || {}).color }} /><span className="grow ellip">{ev.title || '(No title)'}</span><kbd>{parseLocal(ev.start).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</kbd></button>)}</div>}</div>}

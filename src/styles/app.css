@@ -9,14 +9,8 @@
 .appname { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 1.3rem; line-height: 1; }
 .appname-t { font-size: 0.95rem; font-weight: 700; white-space: nowrap; }
 @media (max-width: 900px) { .appname-t { display: none; } }
-.appframe[data-app="docs"] { --brand: #185abd; --brand-ink: #fff; --focus: #185abd; }
-.appframe[data-app="sheets"] { --brand: #107c41; --brand-ink: #fff; --focus: #107c41; }
-.appframe[data-app="slides"] { --brand: #c43e1c; --brand-ink: #fff; --focus: #c43e1c; }
 @media (prefers-color-scheme: dark) {
-  .appframe[data-app="docs"] { --brand: #5fa0f0; --brand-ink: #0b1b33; --focus: #7db4f5; }
-  .appframe[data-app="sheets"] { --brand: #4cc58a; --brand-ink: #062515; --focus: #6fd6a2; }
-  .appframe[data-app="slides"] { --brand: #f0805f; --brand-ink: #33110a; --focus: #f59a80; }
-}
+      }
 .titleinput { min-width: 120px; width: 260px; max-width: 40vw; padding: 0.3rem 0.5rem; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ink); font: inherit; font-size: 1.02rem; font-weight: 600; }
 .titleinput:hover { border-color: var(--line); }
 .titleinput:focus { border-color: var(--focus); background: var(--bg); outline: none; }

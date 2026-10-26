@@ -1,10 +1,17 @@
 # Techomato Softwares
 
 A website that offers desktop software, either as **browser apps** (no install) or as **Windows downloads**.
-It currently ships 18 browser apps (see below).
+It currently ships 28 browser apps (see below).
 
-Built with React 18, React Router and Vite. Apart from the Office-file libraries below, the apps have no dependencies, and files
+Built with React 18, React Router and Vite. Apart from the libraries below (Office files, PDF, Markdown, highlighting), the apps have no dependencies, and files
 are stored in the visitor's own browser (localStorage), so there is no backend to run.
+
+## Design
+
+Every page and app shares the Techomato look from the original portal: paper background, ink text, tomato accent (`#C8381F`),
+Bricolage Grotesque headings, Instrument Sans body, pill buttons and the tomato-with-chevrons logo (`components/Brand.jsx`).
+The theme lives in `src/styles.css` (tokens) and `src/styles/techomato.css` (applied last, restyles the shared app kits).
+Fonts load from Google Fonts (see `index.html`); without network the system sans-serif is used.
 
 ## Run it
 
@@ -70,6 +77,16 @@ Set `status: 'coming-soon'` to list something before it is ready.
 | **Techomato Video Studio** | Timeline video editor: tracks, keyframes, transitions, titles, looks, WebM/MP4 export. |
 | **Techomato Motion Studio** | Compositing and animation: keyframes, graph editor, expressions, effects, WebM / PNG-sequence export. |
 | **Techomato 3D Studio** | 3D modelling and rendering on a custom WebGL 2 engine: edit mode, modifiers, sculpting, lights, keyframes, OBJ/STL. |
+| **Techomato PDF Toolkit** | Merge, split, reorder, rotate, annotate, sign, watermark and number PDF pages (pdf-lib + pdf.js). |
+| **Techomato Whiteboard** | Infinite canvas: pen, shapes, sticky notes, connectors; PNG/SVG export. |
+| **Techomato Code Playground** | HTML/CSS/JS editor with live sandboxed preview, console, multiple files, ZIP export. |
+| **Techomato Image Converter** | Batch convert/resize/compress JPG, PNG, WebP, AVIF, BMP, ICO; target file size; ZIP. |
+| **Techomato Recorder** | Screen, screen + camera, camera and voice recording; WebM/MP4 where supported. |
+| **Techomato Mind Maps** | Keyboard-driven mind maps; PNG, SVG, Markdown, OPML export. |
+| **Techomato Vault** | Encrypted password manager (AES-256-GCM, PBKDF2), TOTP, audit, CSV import. |
+| **Techomato Flowcharts** | Diagram editor with smart connectors, auto layout, Mermaid import/export. |
+| **Techomato Writer** | Markdown editor with live preview, themes, outline; exports MD/HTML/PDF. |
+| **Techomato Flashcards** | Spaced-repetition decks, cloze cards, study/cram/quiz, statistics. |
 
 The "everyday" apps (everything except Docs, Sheets and Slides) share a Fluent-style UI kit:
 `src/styles/fluent.css`, `src/components/fxui.jsx` (popovers, menus, dialogs, toasts), `AppBar.jsx` and
@@ -78,6 +95,8 @@ Planner and Forms reuse some layout classes from `src/styles/money.css`.
 
 Office file support uses `jszip`, `docx` and `pptxgenjs` (loaded on demand, so they do not slow down the
 catalog pages).
+
+The ten newest apps (PDF Toolkit through Flashcards) use the same Fluent kit as the everyday apps. PDF, Writer and Code Playground need `pdf-lib`, `pdfjs-dist`, `marked` and `highlight.js`.
 
 The five Studio apps (Photo, Audio, Video, Motion, 3D) share a dark creative-suite kit: `src/styles/studio.css` and
 `src/components/studio.jsx` (menus, scrubbable number fields, panels, history hook). Their engines live in
@@ -109,3 +128,8 @@ in Chromium only; they were not compared side by side with the Microsoft product
   Motion's effects use `ctx.filter`, which Safari lacks. 3D Studio is a real-time rasterizer with shadows from one sun or
   spot light, not a path tracer. Audio recording needs microphone permission. Large media is limited by browser memory.
 - Paint works on one raster canvas in memory; very large canvases can hit browser limits.
+- Vault: data and the encryption live in this browser only. A lost master password cannot be recovered. Clear site data
+  and the vault is gone, so use the encrypted backup.
+- Recorder: screen capture and system audio are not available on phones, and recordings are kept in this browser's IndexedDB.
+  The app backup covers the list, not the video files. MP4 and AVIF depend on the browser.
+- Code Playground CDN libraries and images in Writer documents load from the network. PDF Toolkit uses pdf.js 6, which needs a modern browser.

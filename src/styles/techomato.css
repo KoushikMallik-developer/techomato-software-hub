@@ -1,0 +1,128 @@
+/* ===== Techomato design language: applied last, so every app and page shares one look =====
+   Paper background, ink text, tomato accent, Bricolage Grotesque headings, pill buttons, rounded cards. */
+
+/* ---------- site ---------- */
+.btn { border-radius: 999px; min-height: 40px; padding: 0 1.25rem; border: 1.5px solid var(--line); transition: transform .12s ease, background .15s ease; }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.btn.primary:hover { filter: brightness(.94); background: var(--brand); }
+.btn.ghost { border-color: var(--ink); background: transparent; }
+.btn.ghost:hover, .btn:hover { background: var(--surface-2); }
+.btn.lg { min-height: 52px; padding: 0 1.8rem; font-size: 1.05rem; }
+.btn.sm { min-height: 30px; padding: 0 .8rem; }
+.site-header { background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); }
+.header-row { min-height: 72px; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 1.45rem; letter-spacing: -.02em; gap: .6rem; }
+.brand b { color: var(--ink); font-weight: 500; opacity: .6; }
+.nav a { border-bottom: 0; padding: .45rem .9rem; border-radius: 999px; color: var(--ink); font-weight: 500; }
+.nav a:hover, .nav a.active { background: var(--surface-2); color: var(--ink); }
+.hero { background: var(--bg); padding: 4.5rem 0 3.5rem; border-bottom: 0; }
+.hero h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -.035em; line-height: .98; font-size: clamp(2.7rem, 6.2vw, 4.9rem); max-width: 12ch; }
+.hero h1 .hl { color: var(--brand); }
+.eyebrow { text-transform: none; letter-spacing: 0; font-size: .85rem; font-weight: 600; background: var(--surface-2); padding: .3rem .8rem; border-radius: 999px; color: var(--ink); }
+.lead { color: var(--ink-soft); font-size: 1.15rem; line-height: 1.6; }
+.hero-tile { border-radius: 22px; box-shadow: none; }
+.hero-tile:hover { box-shadow: 0 20px 40px -18px rgba(23, 24, 28, .35); }
+.fact { border-left: 0; border-radius: 16px; border: 1px solid var(--line); }
+.search { border-radius: 999px; padding: .75rem 1.2rem; max-width: 460px; }
+.search:focus { outline: none; border-color: var(--ink); }
+.chip { border-radius: 999px; background: var(--surface-2); border-color: transparent; color: var(--ink-soft); font-weight: 600; }
+.chip.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.section-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; }
+.card { border-radius: 22px; box-shadow: none; padding: 1.3rem; }
+.card:hover { box-shadow: 0 20px 40px -22px rgba(23, 24, 28, .35); border-color: var(--ink); }
+.card h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: -.02em; }
+.card-icon { border-radius: 16px; }
+.badge { background: var(--surface-2); border-color: transparent; color: var(--ink-soft); }
+.badge-browser { background: #E3ECFB; color: #1F4FA8; border-color: transparent; }
+.badge-windows { background: #E4EFE3; color: #2F5D3A; border-color: transparent; }
+.badge-soon { background: #FDEBD7; color: #8A3B05; border-color: transparent; }
+@media (prefers-color-scheme: dark) { .badge-browser { background: #1B2640; color: #9DB9F2; } .badge-windows { background: #1E2F22; color: #9BD28A; } .badge-soon { background: #3A2616; color: #F0B27A; } }
+.facts { border-radius: 22px; }
+.detail-head h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -.035em; font-size: clamp(2.2rem, 4vw, 3rem); }
+.site-footer { background: var(--panel); color: #F5F2EC; border-top: 0; margin-top: 4rem; padding: 2.2rem 0; --ink: #F5F2EC; --muted: #9CA0AB; --ink-soft: #9CA0AB; }
+.site-footer .muted { color: var(--panel-muted); }
+.foot-brand { font-family: var(--font-display); font-size: 1.3rem; letter-spacing: -.02em; }
+
+/* ---------- Fluent kit (all everyday apps) ---------- */
+html .fx {
+  --bg: #FFFFFF; --bg2: #F5F2EC; --bg3: #EFEAE1; --card: #FFFFFF; --ink: #17181C; --ink2: #45484F; --ink3: #5B5F6A;
+  --line: #E4DFD5; --line2: #D6CFC1; --sel: #EFEAE1; --hover: #F5F2EC; --danger: #B3261E; --ok: #2F5D3A; --warn: #8A3B05;
+  --panel: #17181C; --r: 10px; --rl: 16px; --shadow: 0 20px 40px -18px rgba(23, 24, 28, .35), 0 0 1px rgba(23, 24, 28, .2);
+  font-family: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  html .fx {
+    --bg: #1C1D22; --bg2: #141417; --bg3: #25272D; --card: #1C1D22; --ink: #F1EFEA; --ink2: #C9CBD2; --ink3: #A3A6AF;
+    --line: #2C2E35; --line2: #3A3D46; --sel: #2C2E35; --hover: #25272D; --danger: #F28B82; --ok: #7CC45C; --warn: #F0B27A;
+    --panel: #0F1013;
+  }
+}
+html .fx:not(.frm-solo) { --brand: #C8381F !important; --brand-h: #A82E19 !important; --brand-soft: #FBE6E0 !important; --brand-ink: #FFFFFF !important; }
+@media (prefers-color-scheme: dark) { html .fx:not(.frm-solo) { --brand: #D9482E !important; --brand-h: #E85D44 !important; --brand-soft: #3A1E18 !important; } }
+html .fx h1, html .fx h2, html .fx h3, html .fx .fx-bar-name b, html .fx .fx-modal h2 { font-family: 'Bricolage Grotesque', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -.02em; }
+html .fx .fx-bar { background: var(--panel); color: #F5F2EC; border-bottom: 1px solid #2A2C33; height: 54px; }
+.fx-brand { display: inline-flex; align-items: center; gap: 8px; color: #F5F2EC; text-decoration: none; font-family: 'Bricolage Grotesque', 'Instrument Sans', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: -.02em; padding: 4px 8px 4px 6px; border-radius: 999px; }
+.fx-brand:hover { background: rgba(255, 255, 255, .1); }
+.fx-bar-div { width: 1px; height: 22px; background: #3A3D46; margin: 0 4px; flex: none; }
+html .fx .fx-bar-name b { font-weight: 700; font-size: 16px; }
+html .fx .fx-bar-btn, html .fx .fx-back { border-radius: 999px; }
+html .fx .fx-search input { border-radius: 999px; background: rgba(255, 255, 255, .12); }
+html .fx .fb { border-radius: 999px; height: 34px; padding: 0 16px; border: 1.5px solid var(--line2); font-weight: 600; }
+html .fx .fb:hover:not(:disabled) { background: var(--bg3); }
+html .fx .fb.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+html .fx .fb.pri:hover:not(:disabled) { background: var(--brand-h); }
+html .fx .fb.sub { border-color: transparent; background: transparent; }
+html .fx .fb.sub:hover:not(:disabled) { background: var(--bg3); }
+html .fx .fb.on, html .fx .fb.sub.on { background: var(--brand-soft); color: var(--brand); }
+html .fx .fb.ico { width: 34px; padding: 0; }
+html .fx .fb.sm { height: 28px; padding: 0 12px; }
+html .fx .fb.sm.ico { width: 28px; padding: 0; }
+html .fx .fb.lg { height: 46px; padding: 0 24px; font-size: 15px; }
+html .fx .fb.danger { color: var(--danger); }
+html .fx .fi { border-radius: 12px; border: 1.5px solid var(--line2); height: 36px; padding: 0 12px; }
+html .fx textarea.fi { padding: 8px 12px; }
+html .fx .fi:focus { border: 1.5px solid var(--ink); padding-bottom: 0; }
+html .fx .fx-seg { border: 0; background: var(--bg3); padding: 3px; border-radius: 999px; gap: 2px; }
+html .fx .fx-seg button { border: 0; border-radius: 999px; background: transparent; height: 28px; color: var(--ink2); }
+html .fx .fx-seg button:hover { background: transparent; color: var(--ink); }
+html .fx .fx-seg button.on { background: var(--bg); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(23, 24, 28, .12); }
+html .fx .fx-tabs { border-bottom: 1px solid var(--line); background: var(--bg); padding: 0 10px; }
+html .fx .fx-tabs button { border-radius: 10px 10px 0 0; }
+html .fx .fx-tabs button.on { color: var(--ink); }
+html .fx .fx-chip { background: var(--bg3); border-radius: 999px; }
+html .fx .fx-pop { border-radius: 16px; padding: 6px; }
+html .fx .fx-row { border-radius: 10px; }
+html .fx .fx-modal { border-radius: 24px; padding: 26px 28px; }
+html .fx .fx-modal-back { background: rgba(15, 16, 19, .55); }
+html .fx .fx-toast { background: var(--ink); color: var(--bg); border-radius: 14px; font-weight: 600; }
+html .fx .fx-toast button { color: var(--brand-soft); }
+html .fx .fx-empty h3 { font-family: 'Bricolage Grotesque', 'Instrument Sans', sans-serif; font-weight: 700; }
+html .fx .fcheck.on { background: var(--brand); border-color: var(--brand); }
+html .fx ::-webkit-scrollbar-thumb { background: var(--line2); }
+
+/* ---------- Docs / Sheets / Slides frame ---------- */
+.appframe[data-app], .appframe[data-app="docs"], .appframe[data-app="sheets"], .appframe[data-app="slides"] { --brand: #C8381F; --brand-ink: #fff; --focus: #C8381F; }
+@media (prefers-color-scheme: dark) { .appframe[data-app], .appframe[data-app="docs"], .appframe[data-app="sheets"], .appframe[data-app="slides"] { --brand: #D9482E; --brand-ink: #fff; --focus: #E85D44; } }
+.apptop { background: var(--panel); color: #F5F2EC; --ink: #F5F2EC; --ink-soft: #C9CBD2; --line: #3A3D46; --surface-2: rgba(255, 255, 255, .12); --surface: #17181C; --bg: #22242A; }
+.apptop .back { display: inline-flex; align-items: center; gap: 8px; color: #F5F2EC; font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; letter-spacing: -.02em; border-radius: 999px; padding: 4px 10px 4px 6px; }
+.apptop .back:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.apptop .appname-t { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: #F5F2EC; }
+.apptop .titleinput { color: #F5F2EC; border-radius: 999px; padding: .35rem .8rem; }
+.apptop .titleinput:hover { border-color: #3A3D46; }
+.apptop .titleinput:focus { background: #22242A; border-color: #8a8d99; }
+.apptop .savestate { color: #9CA0AB; }
+.apptop .btn { border-radius: 999px; background: transparent; color: #F5F2EC; border-color: #4A4D58; }
+.apptop .btn:hover { background: rgba(255, 255, 255, .12); }
+.apptop .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+.apptop .icon-btn { color: #C9CBD2; } .apptop .icon-btn:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.appframe .menu-panel, .appframe .submenu, .appframe .panel { border-radius: 14px; }
+
+/* ---------- Studio (dark) kit follows the Techomato dark panel palette ---------- */
+html .fx.stu { --bg: #141417; --bg2: #17181C; --bg3: #1F2127; --card: #1A1B20; --ink: #F1EFEA; --ink2: #C0C3CC; --ink3: #8E919C; --line: #2A2C33; --line2: #3A3D46; --hover: #25272D; --sel: #2C2E35; --brand: #E4573A !important; --brand-h: #F26A4D !important; --brand-soft: color-mix(in srgb, #E4573A 24%, #141417) !important; }
+html .fx.stu .stu-btn { border-radius: 999px; padding: 0 12px; } html .fx.stu .stu-btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+html .fx.stu .stu-tool, html .fx.stu .stu-ib, html .fx.stu .stu-mb { border-radius: 10px; }
+html .fx.stu .stu-tab { font-family: 'Instrument Sans', sans-serif; }
+html .fx.stu .fx-bar { background: #0F1013; }
+@media (max-width: 720px) { .fx-brand-t, .apptop .back-t { display: none; } }
+.hero-tile.soon { border-radius: 22px; }

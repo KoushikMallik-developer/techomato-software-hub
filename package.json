@@ -1,7 +1,9 @@
 {
   "name": "techomato-softwares",
   "private": true,
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -15,7 +17,11 @@
     "react-router-dom": "^6.28.0",
     "jszip": "^3.10.1",
     "docx": "^9.0.0",
-    "pptxgenjs": "^4.0.1"
+    "pptxgenjs": "^4.0.1",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.2.108",
+    "marked": "^18.0.10",
+    "highlight.js": "^11.11.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

@@ -1,0 +1,25 @@
+/* Techomato Whiteboard */
+.wb { --brand: #2c8f8a; }
+.wb-top { display: flex; align-items: center; gap: 6px; padding: 5px 10px; background: var(--bg); border-bottom: 1px solid var(--line); flex: none; flex-wrap: wrap; }
+.wb-sel { width: 170px; height: 30px; } .wb-sel2 { width: 110px; height: 28px; } .wb-lbl { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink2); } .wb-vs { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+.wb-save { font-size: 12px; opacity: .85; margin-right: 6px; }
+.wb-body { flex: 1; display: flex; min-height: 0; }
+.wb-tools { width: 54px; flex: none; background: var(--bg); border-right: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; overflow-y: auto; }
+.wb-tools .fb.ico { width: 40px; height: 38px; }
+.wb-canvas { position: relative; flex: 1; min-width: 0; overflow: hidden; touch-action: none; }
+.wb-svg { display: block; position: absolute; inset: 0; user-select: none; outline: none; }
+.wb-h { fill: #fff; stroke: #2c8f8a; }
+.wb-edit { position: absolute; resize: none; border: 2px solid var(--brand); outline: none; border-radius: 3px; overflow: hidden; z-index: 5; box-sizing: border-box; user-select: text; }
+.wb-hint { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); text-align: center; color: #667085; max-width: 360px; display: flex; flex-direction: column; gap: 6px; pointer-events: none; font-size: 14px; } .wb-hint b { font-size: 18px; color: #475467; } .wb-hint .wb-link { pointer-events: auto; }
+.wb-link { border: 0; background: transparent; color: var(--brand); text-decoration: underline; padding: 0; font: inherit; cursor: pointer; }
+.wb-zoom { position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; gap: 2px; background: var(--card); border: 1px solid var(--line2); border-radius: 8px; box-shadow: var(--shadow); padding: 2px; }
+.wb-zv { min-width: 52px; border: 0; background: transparent; font-size: 12.5px; height: 28px; border-radius: 6px; } .wb-zv:hover { background: var(--hover); }
+.wb-props { width: 240px; flex: none; background: var(--bg); border-left: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+.wb-l { font-size: 12px; color: var(--ink2); margin-top: 6px; } .wb-props input[type=range] { width: 100%; accent-color: var(--brand); }
+.wb-sw { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .wb-sw input[type=color] { width: 26px; height: 26px; padding: 0; border: 1px solid var(--line2); border-radius: 50%; background: none; }
+.wb-sw .fx-color.none { background: linear-gradient(135deg, transparent 46%, #d13438 46% 54%, transparent 54%) !important; border: 1px solid var(--line2); }
+.wb-row { display: flex; align-items: center; gap: 4px; } .wb-row.wrap { flex-wrap: wrap; } .wb-row .fi { width: 64px; height: 28px; }
+.wb-small { font-size: 12px; margin: 4px 0; }
+.wb-tpl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .wb-tp { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 14px; border: 1px solid var(--line2); border-radius: 8px; background: var(--bg); } .wb-tp:hover { border-color: var(--brand); background: var(--brand-soft); } .wb-tp span { font-size: 12.5px; color: var(--ink2); }
+.wb-kbd { background: var(--bg3); border: 1px solid var(--line2); border-radius: 4px; padding: 1px 6px; font: 12px ui-monospace, Consolas, monospace; width: fit-content; }
+@media (max-width: 760px) { .wb-props { display: none; } }

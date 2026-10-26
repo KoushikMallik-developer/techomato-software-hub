@@ -1,0 +1,24 @@
+/* Techomato Flowcharts */
+.fl { --brand: #1b6f9e; --brand-h: #155a80; --brand-soft: #e2f1f9; display: flex; flex-direction: column; height: 100vh; }
+@media (prefers-color-scheme: dark) { .fl { --brand-soft: #12303f; } }
+.fl-top { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--bg); border-bottom: 1px solid var(--line); flex: none; flex-wrap: wrap; }
+.fl-sel { width: auto; min-width: 160px; max-width: 240px; height: 32px; } .fl-vs { width: 1px; height: 22px; background: var(--line); margin: 0 4px; } .fl-zoom { min-width: 42px; text-align: center; font-size: 12.5px; } .fl-save { font-size: 12px; opacity: .85; margin-right: 6px; }
+.fl-body { flex: 1; display: flex; min-height: 0; }
+.fl-pal { width: 150px; flex: none; overflow-y: auto; padding: 10px 8px; background: var(--bg2); border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; } .fl-pal .fx-head { padding: 0 4px 6px; }
+.fl-shape { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ink); font-size: 12.5px; text-align: left; cursor: grab; } .fl-shape:hover { background: var(--hover); border-color: var(--line2); } .fl-shape svg { flex: none; color: var(--ink2); }
+.fl-canvas { position: relative; flex: 1; min-width: 0; overflow: hidden; background-color: #ffffff; outline: none; touch-action: none; }
+.fl-canvas.grid { background-image: radial-gradient(circle, #c4cad3 1px, transparent 1.2px); }
+.fl-canvas.pan { cursor: grab; } .fl-svg { position: absolute; inset: 0; display: block; font-family: Inter, 'Segoe UI', system-ui, sans-serif; }
+.fl-node { cursor: move; } .fl-hit { cursor: pointer; }
+.fl-port { fill: #fff; stroke: #2f8fdd; stroke-width: 2; cursor: crosshair; } .fl-port:hover { fill: #2f8fdd; }
+.fl-h { fill: #fff; stroke: #2f8fdd; stroke-width: 1.6; } .fl-h.nw, .fl-h.se { cursor: nwse-resize; } .fl-h.ne, .fl-h.sw { cursor: nesw-resize; }
+.fl-edit { position: absolute; z-index: 5; resize: none; text-align: center; border: 2px solid #2f8fdd; border-radius: 6px; background: rgba(255,255,255,.96); color: #111827; font-family: inherit; line-height: 1.3; padding: 4px; box-sizing: border-box; outline: none; display: block; }
+.fl-empty { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); text-align: center; max-width: 420px; color: #4b5563; pointer-events: none; } .fl-empty h3 { margin: 0 0 6px; font-weight: 600; font-size: 20px; color: #1f2937; } .fl-empty p { margin: 0 0 14px; line-height: 1.5; } .fl-ebtn { display: flex; gap: 10px; justify-content: center; pointer-events: auto; }
+.fl-panel { width: 250px; flex: none; background: var(--bg); border-left: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 9px; overflow-y: auto; } .fl-panel .fx-head { padding: 0; }
+.fl-lbl { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--ink2); } .fl-lbl b { color: var(--ink); } .fl-lbl .fi { height: 30px; } .fl-lbl textarea.fi { height: auto; padding: 6px 8px; line-height: 1.4; } .fl-lbl input[type=range] { accent-color: var(--brand); width: 100%; }
+.fl-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .fl-btns { display: flex; flex-wrap: wrap; gap: 6px; } .fl-foot { margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+.fl-sw { display: flex; flex-wrap: wrap; gap: 6px; } .fl-swb { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line2); padding: 0; } .fl-swb.on { border-color: var(--brand); box-shadow: 0 0 0 2px var(--bg) inset; }
+.fl-note { font-size: 12.5px; color: var(--ink2); line-height: 1.5; }
+.fl-tpls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .fl-tpl { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px; border: 1px solid var(--line2); border-radius: 8px; background: var(--bg); color: var(--ink); text-align: left; } .fl-tpl:hover { border-color: var(--brand); background: var(--brand-soft); } .fl-tpl span { font-size: 12.5px; color: var(--ink2); }
+.fl-kbd { background: var(--bg3); border: 1px solid var(--line2); border-radius: 4px; padding: 1px 6px; font: 12px ui-monospace, Consolas, monospace; width: fit-content; }
+@media (max-width: 860px) { .fl-panel { display: none; } .fl-pal { width: 56px; } .fl-shape span { display: none; } }

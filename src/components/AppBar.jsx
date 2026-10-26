@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import AppLogo, { APP_COLORS } from './AppLogo.jsx';
+import AppLogo from './AppLogo.jsx';
 import Icon from './Icon.jsx';
+import { TomatoMark } from './Brand.jsx';
 import { useDialog } from './Dialogs.jsx';
 import { useDismiss } from './ui.jsx';
 import { downloadFile, pickFile, readAsText } from '../lib/download.js';
@@ -32,10 +33,10 @@ export default function AppBar({ id, name, center, right, backup, extraMenu = []
   const reset = async () => {
     if (await dlg.confirm({ title: 'Erase all data', message: `Delete everything stored by ${name} in this browser? This cannot be undone.`, okText: 'Erase everything', danger: true })) { backup.set(backup.blank()); dlg.toast('All data erased'); }
   };
-  const [c] = APP_COLORS[id] || ['#0f6cbd'];
   return (
-    <header className="fx-bar no-print" style={{ '--bar': (APP_COLORS[id] || [c, c])[1] }}>
-      <Link to="/" className="fx-back" title="Back to Techomato Softwares"><Icon name="chevronLeft" size={14} /><span>Techomato</span></Link>
+    <header className="fx-bar no-print">
+      <Link to="/" className="fx-brand" title="Back to Techomato Softwares"><TomatoMark size={26} /><span className="fx-brand-t">techomato</span></Link>
+      <span className="fx-bar-div" aria-hidden="true" />
       <span className="fx-bar-name"><AppLogo id={id} size={24} /><b>{name}</b></span>
       {center && <div className="fx-bar-center">{center}</div>}
       <div className="spacer" />

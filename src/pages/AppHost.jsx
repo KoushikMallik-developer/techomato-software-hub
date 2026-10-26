@@ -20,6 +20,16 @@ const apps = {
   video: lazy(() => import('../apps/VideoApp.jsx')),
   motion: lazy(() => import('../apps/MotionApp.jsx')),
   '3d': lazy(() => import('../apps/ThreeDApp.jsx')),
+  pdf: lazy(() => import('../apps/PdfApp.jsx')),
+  whiteboard: lazy(() => import('../apps/WhiteboardApp.jsx')),
+  code: lazy(() => import('../apps/CodeApp.jsx')),
+  convert: lazy(() => import('../apps/ConvertApp.jsx')),
+  recorder: lazy(() => import('../apps/RecorderApp.jsx')),
+  mindmap: lazy(() => import('../apps/MindApp.jsx')),
+  vault: lazy(() => import('../apps/VaultApp.jsx')),
+  flow: lazy(() => import('../apps/FlowApp.jsx')),
+  writer: lazy(() => import('../apps/WriterApp.jsx')),
+  cards: lazy(() => import('../apps/CardsApp.jsx')),
 };
 
 // To add a new browser app: create src/apps/MyApp.jsx, register it here,

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { software, categories, categoryOrder } from '../data/software.js';
-import SoftwareCard, { Logo } from '../components/SoftwareCard.jsx';
+import SoftwareCard from '../components/SoftwareCard.jsx';
 import AppLogo from '../components/AppLogo.jsx';
 import { TomatoMark } from '../components/Brand.jsx';
 
@@ -11,6 +11,10 @@ const FACTS = [
   ['Office-compatible', 'Docs, Sheets and Slides open and save .docx, .xlsx and .pptx files.'],
   ['Light and dark', 'Every app follows your device theme and works on phones too.'],
 ];
+
+// Flagship and newest apps shown in the hero (max 5); the full catalog is below.
+const HERO_IDS = ['docs', 'sheets', 'slides', 'pdf', 'photo'];
+const heroApps = HERO_IDS.map((id) => software.find((s) => s.id === id)).filter((s) => s && s.status === 'available');
 
 export default function Home() {
   const [params, setParams] = useSearchParams();
@@ -43,7 +47,7 @@ export default function Home() {
             <h1>Everyday apps, <span className="hl">freshly picked.</span></h1>
             <p className="lead">
               {apps.length} full-featured apps that run right in your browser: documents, spreadsheets, slides, tasks, notes,
-              calendar, money and habits, plus a creative studio for photos, audio, video, motion graphics and 3D. Windows downloads are added as they are released.
+              calendar, money and habits, handy tools like a PDF toolkit, password vault, flashcards, whiteboard and code playground, plus a creative studio for photos, audio, video, motion graphics and 3D. Windows downloads are added as they are released.
             </p>
             <div className="hero-actions">
               <a className="btn primary lg" href="#apps">Browse all apps</a>
@@ -51,17 +55,12 @@ export default function Home() {
             </div>
           </div>
           <div className="hero-tiles" aria-label="Apps">
-            {software.map((s) => (s.status === 'available' ? (
+            {heroApps.map((s) => (
               <Link key={s.id} to={s.launch} className="hero-tile" title={s.name} aria-label={`Open ${s.name}`}>
                 <AppLogo id={s.id} size={64} />
-                <span>{s.name.replace('Techomato ', '')}</span>
+                <span>{s.name.replace('Techomato ', '').replace('PDF Toolkit', 'PDF')}</span>
               </Link>
-            ) : (
-              <div key={s.id} className="hero-tile soon" title={`${s.name} (coming soon)`}>
-                <Logo item={s} size={64} />
-                <span>{s.name.replace('Techomato ', '').replace('PDF Toolkit', 'PDF').replace('Desktop Suite', 'Desktop')}</span>
-              </div>
-            )))}
+            ))}
           </div>
         </div>
       </section>

@@ -1,0 +1,39 @@
+/* Techomato Recorder */
+.rc { --brand: #d13438; --brand-h: #b02a2e; --brand-soft: #fdecec; display: flex; flex-direction: column; height: 100vh; }
+@media (prefers-color-scheme: dark) { .rc { --brand-soft: #3b1d1f; } }
+.rc-tabs { flex: none; }
+.rc-main { flex: 1; display: flex; min-height: 0; }
+.rc-side { width: 300px; flex: none; overflow-y: auto; padding: 12px 14px 20px; background: var(--bg2); border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.rc-side .fx-head { padding: 10px 0 0; } .rc-side .fx-head:first-child { padding-top: 0; } .rc-side .fi { height: 32px; }
+.rc-modes { display: grid; gap: 6px; }
+.rc-mode { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 12px; border: 1px solid var(--line2); border-radius: 8px; background: var(--bg); color: var(--ink); text-align: left; } .rc-mode span { font-size: 12px; color: var(--ink2); }
+.rc-mode:hover:not(:disabled) { border-color: var(--brand); } .rc-mode.on { border-color: var(--brand); background: var(--brand-soft); box-shadow: inset 3px 0 0 var(--brand); } .rc-mode:disabled { opacity: .6; }
+.rc-chk { display: flex; align-items: center; gap: 8px; font-size: 13px; } .rc-chk input { width: 15px; height: 15px; accent-color: var(--brand); margin: 0; } .rc-chk small { color: var(--ink3); }
+.rc-lbl { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--ink2); flex: 1; min-width: 0; } .rc-lbl b { color: var(--ink); } .rc-lbl input[type=range] { accent-color: var(--brand); width: 100%; }
+.rc-row { display: flex; gap: 8px; } .rc-note { font-size: 12px; color: var(--ink2); margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line); line-height: 1.45; }
+.rc-stagewrap { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px; background: var(--bg3); overflow: auto; }
+.rc-err { display: flex; align-items: center; gap: 10px; background: #fdecec; color: #a4262c; border: 1px solid #e8a8ab; border-radius: 8px; padding: 10px 12px; font-size: 13px; } .rc-err .fb { margin-left: auto; }
+@media (prefers-color-scheme: dark) { .rc-err { background: #3b1d1f; color: #ff9ea3; border-color: #6d2a2e; } }
+.rc-stage { position: relative; flex: 1; min-height: 260px; background: #0e0f12; border-radius: 10px; overflow: hidden; display: grid; place-items: center; }
+.rc-stage video { width: 100%; height: 100%; object-fit: contain; background: #000; } .rc-stage.mirror video { transform: scaleX(-1); }
+.rc-stage.audio { background: var(--bg); border: 1px solid var(--line); }
+.rc-idle { text-align: center; color: var(--ink2); padding: 20px; max-width: 420px; } .rc-stage:not(.audio) .rc-idle { color: #c9ccd2; } .rc-idle h2 { margin: 10px 0 4px; font-weight: 600; color: inherit; } .rc-idle p { margin: 0; line-height: 1.5; }
+.rc-big { width: 84px; height: 84px; border-radius: 50%; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; margin: 0 auto; }
+.rc-count { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.55); color: #fff; font-size: 140px; font-weight: 700; }
+.rc-hud { position: absolute; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,.65); color: #fff; padding: 5px 12px; border-radius: 16px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.rc-dot { width: 10px; height: 10px; border-radius: 50%; background: #ff4b4b; animation: rcp 1.2s infinite; } .rc-dot.paused { animation: none; background: #f2c744; } @keyframes rcp { 50% { opacity: .3; } }
+.rc-wave { position: absolute; left: 10%; right: 10%; bottom: 20%; height: 14px; background: var(--bg3); border-radius: 7px; overflow: hidden; } .rc-wave i { display: block; height: 100%; width: 100%; transform-origin: left; background: var(--brand); transition: transform .08s; }
+.rc-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; flex: none; }
+.rc-rec { width: 12px; height: 12px; border-radius: 50%; background: #fff; display: inline-block; margin-right: 6px; } .rc-sq { width: 11px; height: 11px; background: #fff; display: inline-block; margin-right: 6px; border-radius: 2px; }
+.rc-saving { color: var(--ink2); } .rc-meter { width: 120px; height: 8px; background: var(--line2); border-radius: 4px; overflow: hidden; } .rc-meter i { display: block; height: 100%; background: #2e9d4a; transition: width .08s; }
+.rc-lib { flex: 1; overflow: auto; padding: 16px 20px; background: var(--bg3); }
+.rc-libhead { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin-bottom: 12px; font-size: 13px; }
+.rc-empty { max-width: 460px; margin: 8vh auto 0; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; } .rc-empty h2 { margin: 6px 0 0; font-weight: 600; } .rc-empty p { margin: 0; color: var(--ink2); }
+.rc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.rc-card { background: var(--card, var(--bg)); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.rc-th { position: relative; aspect-ratio: 16 / 9; border: 0; padding: 0; background: #14161a; cursor: pointer; display: grid; place-items: center; } .rc-th img { width: 100%; height: 100%; object-fit: cover; display: block; } .rc-athumb { color: #aab; }
+.rc-play { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.6); color: #fff; display: grid; place-items: center; font-size: 16px; padding-left: 3px; } .rc-th:hover .rc-play { background: var(--brand); }
+.rc-dur { position: absolute; right: 8px; bottom: 8px; background: rgba(0,0,0,.7); color: #fff; font-size: 11.5px; padding: 1px 6px; border-radius: 4px; }
+.rc-cinfo { padding: 8px 12px 0; } .rc-cname { font-weight: 600; font-size: 13.5px; } .rc-cmeta { font-size: 12px; color: var(--ink2); margin-top: 2px; } .rc-cact { display: flex; gap: 4px; padding: 6px 8px 8px; justify-content: flex-end; }
+.rc-video { width: 100%; max-height: 66vh; background: #000; border-radius: 6px; display: block; } .rc-audio { width: 100%; }
+@media (max-width: 760px) { .rc-main { flex-direction: column; } .rc-side { width: auto; max-height: 48%; border-right: 0; border-bottom: 1px solid var(--line); } }

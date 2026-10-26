@@ -5,6 +5,7 @@ import AppLogo, { APP_COLORS } from './AppLogo.jsx';
 import MenuBar from './MenuBar.jsx';
 import { useDialog } from './Dialogs.jsx';
 import { downloadFile, pickFile, readAsText, safeName } from '../lib/download.js';
+import { TomatoMark } from './Brand.jsx';
 import '../styles/app.css';
 
 function timeAgo(ts) {
@@ -167,7 +168,7 @@ export default function AppChrome({
     <div className="appframe" data-app={logoId}>
       <header className="apptop no-print">
         <Link to="/" className="back" title="Back to Techomato Softwares">
-          <Icon name="chevronLeft" size={14} /> Techomato
+          <TomatoMark size={24} /> <span className="back-t">techomato</span>
         </Link>
         <span className="appname">{APP_COLORS[logoId] ? <AppLogo id={logoId} size={26} /> : <span aria-hidden="true">{icon}</span>}<b className="appname-t">{name}</b></span>
         <input

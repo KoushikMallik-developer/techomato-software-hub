@@ -2,7 +2,7 @@ import { addDays, addMonths, addYears, diffDays, parseYmd, ymd, todayKey, startO
 import { uid } from '../../lib/useStore.js';
 
 export const SMART = [
-  { id: 'myday', name: 'My Day', icon: 'sun', color: '#2564cf' },
+  { id: 'myday', name: 'My Day', icon: 'sun', color: '#C8381F' },
   { id: 'important', name: 'Important', icon: 'star', color: '#c4314b' },
   { id: 'planned', name: 'Planned', icon: 'calendarIco', color: '#107c41' },
   { id: 'all', name: 'All tasks', icon: 'inbox', color: '#5b5fc7' },
@@ -13,7 +13,7 @@ export const LIST_COLORS = ['#2564cf', '#0f6cbd', '#5b5fc7', '#8764b8', '#b146c2
 
 export const blankData = () => ({
   v: 1,
-  lists: [{ id: 'tasks', name: 'Tasks', icon: 'home', color: '#2564cf', builtin: true, sort: { by: 'manual', dir: 'asc' }, hideDone: false, groupId: null }],
+  lists: [{ id: 'tasks', name: 'Tasks', icon: 'home', color: '#C8381F', builtin: true, sort: { by: 'manual', dir: 'asc' }, hideDone: false, groupId: null }],
   groups: [],
   tasks: [],
   settings: { newOnTop: true, confirmDelete: true, hidden: [], sound: true, completedOpen: false },

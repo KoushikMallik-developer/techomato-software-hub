@@ -255,21 +255,126 @@ export const software = [
     ],
   }),
 
+  /* ---------------- More tools ---------------- */
+  app({
+    id: 'pdf', name: 'Techomato PDF Toolkit', category: 'Utilities', color: '#b3262b',
+    tagline: 'Merge, split, edit and sign PDFs.',
+    description: 'Work on PDF files privately in your browser. Nothing is uploaded. Combine, split, reorder, rotate, annotate, fill and export.',
+    features: [
+      'Merge, split, extract, reorder, rotate and delete pages with thumbnails',
+      'Annotate: text, highlight, draw, shapes, images and signatures',
+      'Add page numbers, watermarks and metadata; images to PDF and PDF to images',
+      'Files are processed on your device and never leave the browser',
+    ],
+  }),
+
+  app({
+    id: 'whiteboard', name: 'Techomato Whiteboard', category: 'Creative', color: '#1f7a75',
+    tagline: 'An infinite canvas to sketch and brainstorm.',
+    description: 'Draw freehand, add shapes, sticky notes, text and connectors on a canvas that pans and zooms without limits.',
+    features: [
+      'Pen, highlighter, shapes, arrows, sticky notes, text and images',
+      'Infinite pan and zoom, grid, layers order, grouping and alignment',
+      'Undo/redo, autosave, export PNG/SVG or a board file',
+    ],
+  }),
+
+  app({
+    id: 'mindmap', name: 'Techomato Mind Maps', category: 'Creative', color: '#c2740f',
+    tagline: 'Organise ideas as a mind map.',
+    description: 'Fast, keyboard-driven mind maps with several layouts, colours, notes and exports.',
+    features: [
+      'Tab, Enter and arrow keys to build quickly; drag to re-parent topics',
+      'Map, right, left and down layouts; themes, colours, notes and checkboxes',
+      'Collapse branches, search, undo/redo',
+      'Export PNG, SVG, Markdown, OPML or JSON; import from an outline or OPML',
+    ],
+  }),
+
+  app({
+    id: 'flow', name: 'Techomato Flowcharts', category: 'Creative', color: '#1b6f9e',
+    tagline: 'Draw flowcharts and diagrams.',
+    description: 'Drag shapes onto the canvas and connect them. Connectors follow shapes, and Auto layout tidies a diagram for you.',
+    features: [
+      'Flowchart shapes with orthogonal, curved or straight connectors',
+      'Resize, align, distribute, group select, undo/redo and templates',
+      'Auto layout; import and export Mermaid; export PNG, SVG or JSON',
+    ],
+  }),
+
+  app({
+    id: 'code', name: 'Techomato Code Playground', category: 'Developer', color: '#1f2937',
+    tagline: 'Write HTML, CSS and JavaScript with a live preview.',
+    description: 'An in-browser editor with syntax highlighting, a live sandboxed preview and a console.',
+    features: [
+      'HTML, CSS and JS editor with auto-pairing, indent, comment and format shortcuts',
+      'Live preview in a sandbox, console with input, and device size presets',
+      'Multiple files, templates and CDN libraries (these load from the network)',
+      'Find/replace, import files, export a ZIP or a single HTML file',
+    ],
+  }),
+
+  app({
+    id: 'convert', name: 'Techomato Image Converter', category: 'Utilities', color: '#1a73c9',
+    tagline: 'Convert, resize and compress images in bulk.',
+    description: 'Convert many images at once between JPG, PNG, WebP, AVIF, BMP and ICO without uploading them.',
+    features: [
+      'Resize by size, percent or fit; crop to a ratio; rotate, flip, grayscale',
+      'Quality slider or a target file size in KB; background fill for transparency',
+      'Batch rename patterns, before/after compare, download all as a ZIP',
+      'AVIF and WebP output depend on your browser',
+    ],
+  }),
+
+  app({
+    id: 'recorder', name: 'Techomato Recorder', category: 'Utilities', color: '#c42b32',
+    tagline: 'Record your screen, camera or voice.',
+    description: 'Capture the screen with an optional camera bubble, the camera alone, or audio only, then save it. Recordings stay on your device.',
+    features: [
+      'Screen, screen + camera, camera and voice modes with microphone and system audio',
+      'Countdown, pause/resume, WebM or MP4 where the browser supports it',
+      'Library of recordings with play, rename, download and delete',
+      'Screen capture needs a desktop browser; recordings are stored in this browser only',
+    ],
+  }),
+
+  app({
+    id: 'vault', name: 'Techomato Vault', category: 'Utilities', color: '#3a42a8',
+    tagline: 'A private, encrypted password manager.',
+    description: 'Store logins, notes and cards encrypted with a master password. Everything stays in this browser.',
+    features: [
+      'AES-256-GCM encryption with a PBKDF2 key; the master password is never stored',
+      'Password and passphrase generator, strength meter, one-time codes (TOTP)',
+      'Audit for weak, reused and old passwords; tags and favourites',
+      'Auto-lock, clipboard auto-clear, CSV import and encrypted backup. A lost master password cannot be recovered',
+    ],
+  }),
+
+  app({
+    id: 'writer', name: 'Techomato Writer', category: 'Productivity', color: '#2f3b49',
+    tagline: 'Write in Markdown with a live preview.',
+    description: 'A focused Markdown editor with split view, themes, outline and exports.',
+    features: [
+      'Split, write-only and preview views; toolbar and shortcuts',
+      'Tables, task lists, code highlighting, outline and find/replace',
+      'Focus mode, document library with templates',
+      'Export Markdown, HTML or PDF (via print)',
+    ],
+  }),
+
+  app({
+    id: 'cards', name: 'Techomato Flashcards', category: 'Productivity', color: '#5f2fa8',
+    tagline: 'Remember anything with spaced repetition.',
+    description: 'Make decks of cards that come back just before you would forget them.',
+    features: [
+      'Spaced-repetition scheduling with learning steps and daily limits',
+      'Basic and fill-in-the-blank cards, bulk add, CSV/TSV import and export',
+      'Study, cram and multiple-choice quiz modes; type-the-answer and read aloud',
+      'Progress: streak, 13-week heatmap, 7-day forecast and card maturity',
+    ],
+  }),
+
   /* ---------------- Coming soon ---------------- */
-  {
-    id: 'whiteboard', name: 'Techomato Whiteboard', category: 'Creative', icon: '🧑‍🏫', color: '#2c7a7b',
-    tagline: 'Sketch, diagram and brainstorm.',
-    description: 'An infinite canvas for sketching and diagrams. Planned.',
-    platforms: ['browser'], status: 'coming-soon',
-    features: ['Freehand drawing', 'Shapes and connectors', 'Export as image'],
-  },
-  {
-    id: 'pdf-toolkit', name: 'Techomato PDF Toolkit', category: 'Utilities', icon: '📄', color: '#c53030',
-    tagline: 'Merge, split and reorder PDFs.',
-    description: 'Work with PDF files locally, in the browser or as a Windows app. Planned.',
-    platforms: ['browser', 'windows'], status: 'coming-soon', download: null,
-    features: ['Merge and split', 'Reorder pages', 'Works offline on Windows'],
-  },
   {
     id: 'desktop-suite', name: 'Techomato Desktop Suite', category: 'Office', icon: '🖥️', color: '#1f3a5f',
     tagline: 'Docs, Sheets and Slides as a Windows app.',
@@ -283,7 +388,7 @@ export const software = [
   },
 ];
 
-const ORDER = ['Office', 'Productivity', 'Life', 'Creative', 'Studio', 'Utilities'];
+const ORDER = ['Office', 'Productivity', 'Life', 'Creative', 'Studio', 'Utilities', 'Developer'];
 export const categories = ['All', ...ORDER.filter((c) => software.some((s) => s.category === c))];
 export const categoryOrder = ORDER;
 

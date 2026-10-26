@@ -11,7 +11,7 @@ export default function Layout() {
         <div className="wrap header-row">
           <Link to="/" className="brand" aria-label={`${SITE.name} home`}>
             <TomatoMark size={32} />
-            <span>Techomato<b> Softwares</b></span>
+            <span>techomato<b> softwares</b></span>
           </Link>
           <nav className="nav" aria-label="Main">
             <NavLink to="/" end>All apps</NavLink>
@@ -26,7 +26,7 @@ export default function Layout() {
       <footer className="site-footer no-print">
         <div className="wrap foot-row">
           <div>
-            <p className="foot-brand"><TomatoMark size={22} /> {SITE.name}</p>
+            <p className="foot-brand"><TomatoMark size={26} /> techomato softwares</p>
             <p className="muted">{SITE.tagline}</p>
           </div>
           <div className="foot-r">

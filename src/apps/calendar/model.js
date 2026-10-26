@@ -1,13 +1,13 @@
 import { addDays, addMonths, daysInMonth, parseYmd, pad, ymd, startOfDay, startOfWeek, diffDays } from '../../lib/cal.js';
 import { uid } from '../../lib/useStore.js';
 
-export const CAL_COLORS = ['#0f6cbd', '#107c10', '#8764b8', '#c239b3', '#d13438', '#ca5010', '#c19c00', '#038387', '#69797e', '#2b88d8'];
+export const CAL_COLORS = ['#C8381F', '#107c10', '#8764b8', '#c239b3', '#d13438', '#ca5010', '#c19c00', '#038387', '#69797e', '#2b88d8'];
 export const REMINDERS = [[null, 'None'], [0, 'At time of event'], [5, '5 minutes before'], [10, '10 minutes before'], [15, '15 minutes before'], [30, '30 minutes before'], [60, '1 hour before'], [120, '2 hours before'], [1440, '1 day before'], [10080, '1 week before']];
 export const SHOW_AS = [['busy', 'Busy'], ['free', 'Free'], ['tentative', 'Tentative'], ['oof', 'Out of office']];
 
 export const blankData = () => ({
   v: 1,
-  cals: [{ id: 'main', name: 'Calendar', color: '#0f6cbd', show: true, builtin: true }],
+  cals: [{ id: 'main', name: 'Calendar', color: '#C8381F', show: true, builtin: true }],
   events: [],
   settings: { weekStart: 0, h12: true, weekNums: false, dayStart: 9, dayEnd: 17, workDays: [1, 2, 3, 4, 5], defLen: 30, defReminder: 15, holidays: 'none', density: 48, view: 'week' },
 });

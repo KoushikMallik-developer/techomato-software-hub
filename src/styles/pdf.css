@@ -1,0 +1,59 @@
+/* Techomato PDF Toolkit */
+.pdf { --brand: #d13438; --brand-h: #b82a2e; --brand-soft: #fdecec; }
+@media (prefers-color-scheme: dark) { .pdf { --brand-soft: #3b1d1f; } }
+.pdf-ribbon { display: flex; gap: 2px; padding: 0 8px; background: var(--bg2); border-bottom: 1px solid var(--line); flex: none; }
+.pdf-ribbon button { position: relative; border: 0; background: transparent; height: 34px; padding: 0 14px; font-size: 13.5px; color: var(--ink2); }
+.pdf-ribbon button:hover { color: var(--ink); background: var(--hover); }
+.pdf-ribbon button.on { color: var(--ink); font-weight: 600; } .pdf-ribbon button.on::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: 0; height: 3px; border-radius: 2px; background: var(--brand); }
+.pdf-tools { display: flex; align-items: stretch; gap: 2px; padding: 6px 10px; background: var(--bg); border-bottom: 1px solid var(--line); flex: none; overflow-x: auto; min-height: 66px; }
+.pdf-rb { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 62px; padding: 4px 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-size: 11.5px; color: var(--ink); white-space: nowrap; }
+.pdf-rb:hover:not(:disabled) { background: var(--hover); } .pdf-rb:disabled { opacity: .4; cursor: default; } .pdf-rb.on { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
+.pdf-sep, .pdf-vsep { width: 1px; background: var(--line); margin: 4px 6px; flex: none; } .pdf-vsep { height: 22px; align-self: center; }
+.pdf-main { flex: 1; display: flex; min-height: 0; }
+.pdf-side { width: 230px; flex: none; border-right: 1px solid var(--line); background: var(--bg2); padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow: auto; }
+.pdf-side .fx-head { padding: 0; }
+.pdf-files { display: flex; flex-direction: column; gap: 2px; }
+.pdf-file { display: flex; align-items: center; gap: 6px; padding: 3px 4px 3px 6px; border-radius: 6px; font-size: 12.5px; } .pdf-file:hover { background: var(--hover); } .pdf-file small { color: var(--ink3); }
+.pdf-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; display: inline-block; }
+.pdf-small { font-size: 12px; margin: 4px 0; } .pdf-sum { font-size: 12.5px; color: var(--ink2); } .pdf-zm { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink2); }
+.pdf-canvas { position: relative; flex: 1; min-width: 0; overflow: auto; background: var(--bg3); padding: 18px; }
+.pdf-canvas.over { outline: 3px dashed var(--brand); outline-offset: -8px; }
+.pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--tw), 1fr)); gap: 14px; align-content: start; }
+.pdf-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 6px 8px; border: 2px solid transparent; border-radius: 8px; background: transparent; cursor: pointer; user-select: none; }
+.pdf-card:hover { background: var(--hover); } .pdf-card.sel { border-color: var(--brand); background: var(--brand-soft); }
+.pdf-card.dl::before, .pdf-card.dr::after { content: ''; position: absolute; top: 6px; bottom: 6px; width: 4px; border-radius: 2px; background: var(--brand); } .pdf-card.dl::before { left: -9px; } .pdf-card.dr::after { right: -9px; }
+.pdf-thw { display: flex; align-items: center; justify-content: center; width: 100%; }
+.pdf-th { position: relative; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.28); flex: none; } .pdf-th canvas { display: block; }
+.pdf-annb { position: absolute; right: 3px; top: 3px; display: inline-flex; align-items: center; gap: 2px; background: var(--brand); color: #fff; font-size: 10.5px; font-weight: 700; padding: 1px 5px; border-radius: 9px; }
+.pdf-cap { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; } .pdf-cap small { font-weight: 400; color: var(--ink2); }
+.pdf-hover { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); display: none; gap: 4px; } .pdf-card:hover .pdf-hover, .pdf-card:focus-visible .pdf-hover { display: flex; }
+.pdf-add { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 160px; border: 2px dashed var(--line2); border-radius: 8px; color: var(--ink2); cursor: pointer; font-size: 13px; } .pdf-add:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+.pdf-empty { max-width: 560px; margin: 6vh auto 0; } .pdf-empty p { margin: 0; line-height: 1.5; }
+.pdf-big { width: 84px; height: 84px; border-radius: 50%; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; }
+.pdf-cta { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0 4px; }
+.pdf-drop { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; background: color-mix(in srgb, var(--brand) 14%, transparent); color: var(--brand); pointer-events: none; font-size: 16px; }
+.pdf-busy { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: grid; place-items: center; z-index: 150; }
+.pdf-busy-box { background: var(--card); color: var(--ink); padding: 18px 26px; border-radius: 10px; box-shadow: var(--shadow); min-width: 260px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.pdf-spin { width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--line2); border-top-color: var(--brand); animation: pdfspin .8s linear infinite; } @keyframes pdfspin { to { transform: rotate(360deg); } }
+.pdf-bar { width: 100%; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; } .pdf-bar i { display: block; height: 100%; background: var(--brand); }
+.pdf-row { display: flex; align-items: center; gap: 8px; } .pdf-lbl { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink2); margin: 6px 0 2px; }
+.pdf-chk { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.pdf-color { width: 44px; height: 28px; padding: 0; border: 1px solid var(--line2); border-radius: 6px; background: var(--bg); margin-top: 4px; }
+.pdf-kbd { background: var(--bg3); border: 1px solid var(--line2); border-radius: 4px; padding: 1px 6px; font: 12px ui-monospace, Consolas, monospace; width: fit-content; }
+.pdf .fx-modal .fx-kv { grid-template-columns: 110px 1fr; }
+/* page editor */
+.pdf-ed { position: fixed; inset: 0; z-index: 120; display: flex; flex-direction: column; background: var(--bg3); }
+.pdf-ed-top { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--bg); border-bottom: 1px solid var(--line); flex: none; }
+.pdf-ed-nav { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; } .pdf-zoom { min-width: 44px; text-align: center; font-size: 12.5px; }
+.pdf-ed-body { flex: 1; display: flex; min-height: 0; }
+.pdf-ed-tools { width: 52px; flex: none; background: var(--bg); border-right: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; overflow-y: auto; }
+.pdf-ed-scroll { flex: 1; overflow: auto; padding: 22px; display: flex; }
+.pdf-ed-page { position: relative; margin: auto; flex: none; background: #fff; box-shadow: 0 2px 14px rgba(0,0,0,.35); }
+.pdf-ed-page canvas { position: absolute; inset: 0; display: block; }
+.pdf-ov { position: absolute; inset: 0; touch-action: none; } .pdf-ov.tool-select { cursor: default; } .pdf-ov:not(.tool-select) { cursor: crosshair; } .pdf-ov.tool-text { cursor: text; }
+.pdf-h { fill: #fff; stroke: #0f6cbd; stroke-width: 1.5; }
+.pdf-ed-props { width: 250px; flex: none; background: var(--bg); border-left: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.pdf-ed-props .fi { height: 30px; } .pdf-ed-props input[type=range] { width: 100%; accent-color: var(--brand); }
+.pdf-signcv { width: 100%; height: auto; aspect-ratio: 3 / 1; border: 1px dashed var(--line2); border-radius: 8px; background: #fff; touch-action: none; cursor: crosshair; display: block; }
+.pdf-sigs { display: flex; gap: 8px; flex-wrap: wrap; } .pdf-sig { display: inline-flex; align-items: center; border: 1px solid var(--line2); border-radius: 6px; background: #fff; } .pdf-sigbtn { border: 0; background: transparent; padding: 4px 8px; } .pdf-sigbtn img { height: 36px; display: block; }
+@media (max-width: 760px) { .pdf-side { display: none; } .pdf-ed-props { width: 200px; } }
