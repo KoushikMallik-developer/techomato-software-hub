@@ -401,7 +401,7 @@ export const software = [
     description: 'An installable Windows version of the office apps that works offline. Planned.',
     platforms: ['windows'], status: 'coming-soon',
     // Example once you have a real installer:
-    // download: { url: './downloads/techomato-desktop-setup.exe', version: '1.0.0', size: '85 MB' },
+    // download: { url: '/downloads/techomato-desktop-setup.exe', version: '1.0.0', size: '85 MB' },
     download: null,
     requirements: 'Windows 10 or later (64-bit).',
     features: ['Works offline', 'Opens local files', 'Auto-update'],

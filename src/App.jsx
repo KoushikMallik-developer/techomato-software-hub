@@ -4,9 +4,12 @@ import Home from './pages/Home.jsx';
 import SoftwarePage from './pages/SoftwarePage.jsx';
 import AppHost from './pages/AppHost.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Seo from './components/Seo.jsx';
 
 export default function App() {
   return (
+    <>
+    <Seo />
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Home />} />
@@ -16,5 +19,6 @@ export default function App() {
       {/* Browser apps run full-screen, without the site header/footer */}
       <Route path="app/:id" element={<AppHost />} />
     </Routes>
+    </>
   );
 }

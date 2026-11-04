@@ -13,7 +13,7 @@ import '../styles/money.css';
 import '../styles/forms.css';
 
 const relTime = (iso) => { const m = Math.round((Date.now() - new Date(iso)) / 60000); if (m < 1) return 'just now'; if (m < 60) return `${m} min ago`; if (m < 1440) return `${Math.round(m / 60)} h ago`; return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); };
-const fillUrl = (fid) => `${window.location.href.split('#')[0]}#/app/forms?fill=${fid}`;
+const fillUrl = (fid) => `${window.location.origin}/app/forms?fill=${fid}`;
 const closedReason = (f) => (!f.settings.open ? 'This form is not accepting responses right now.' : f.settings.closeAt && new Date(f.settings.closeAt) < new Date() ? 'This form closed on ' + new Date(f.settings.closeAt).toLocaleString() + '.' : '');
 
 export default function FormsApp() {
