@@ -7,6 +7,7 @@
   - platforms   ['browser'], ['windows'] or ['browser', 'windows']
   - status      'available' | 'coming-soon'
   - launch      route of a browser app (e.g. '/app/docs'), only for status 'available'
+  - url         external web app hosted elsewhere (opens in a new tab); use instead of launch
   - icon        emoji shown for products that have no AppLogo yet (coming-soon items)
   - download    Windows download: { url, version, size } - put installers in public/downloads/
                 or link to external hosting. Leave null until a real file exists.
@@ -373,6 +374,25 @@ export const software = [
       'Progress: streak, 13-week heatmap, 7-day forecast and card maturity',
     ],
   }),
+
+  /* ---------------- Hosted separately (promoted in its own landing-page section, not in the app grid) ---------------- */
+  {
+    id: 'colleges', name: 'Techomato Colleges', category: 'Business', icon: '🎓', color: '#0f766e',
+    tagline: 'One platform to run your entire college.',
+    description: 'Techomato Colleges brings admissions, academics, fees, examinations and staff management into a single secure platform, with dedicated access for administrators, faculty and students. It is a standalone product with its own sign-in.',
+    platforms: ['browser'], status: 'available', url: 'https://colleges.techomato.com',
+    version: '1.0', requirements: BROWSER,
+    // Landing-page tiles: [title, one-line description, 24x24 stroke-icon path]. Confirm these match the product.
+    highlights: [
+      ['Admissions', 'Applications, enrolment and student records.', 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM19 8v6M22 11h-6'],
+      ['Academics', 'Courses, timetables and attendance.', 'M22 10 12 5 2 10l10 5 10-5zM6 12v5c3 2 9 2 12 0v-5'],
+      ['Fees', 'Fee structures, payments and receipts.', 'M2 6h20v12H2zM2 10h20M6 15h4'],
+      ['Examinations', 'Schedules, marks and results.', 'M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M9 14l2 2 4-4'],
+      ['Staff', 'Faculty profiles, roles and access.', 'M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z'],
+      ['Reports', 'Dashboards and exports for management.', 'M3 3v18h18M7 15l4-4 3 3 5-6'],
+    ],
+    features: ['Admissions and student records', 'Academics, timetables and attendance', 'Fees, payments and receipts', 'Examinations and results', 'Staff and role-based access', 'Reports and dashboards'],
+  },
 
   /* ---------------- Coming soon ---------------- */
   {

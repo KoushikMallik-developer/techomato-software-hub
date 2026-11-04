@@ -37,6 +37,11 @@ export default function SoftwarePage() {
             Open in browser
           </Link>
         )}
+        {available && item.url && (
+          <a className="btn primary lg" href={item.url} target="_blank" rel="noopener noreferrer">
+            Open {item.name.replace('Techomato ', '')}
+          </a>
+        )}
         {canDownload && (
           <a className="btn lg" href={item.download.url} download>
             Download for Windows
@@ -44,7 +49,7 @@ export default function SoftwarePage() {
             {item.download.size ? `, ${item.download.size})` : item.download.version ? ')' : ''}
           </a>
         )}
-        {!canLaunch && !canDownload && (
+        {!canLaunch && !canDownload && !item.url && (
           <button className="btn lg" disabled>
             Coming soon
           </button>

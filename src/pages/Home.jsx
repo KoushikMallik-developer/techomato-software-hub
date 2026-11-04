@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { software, categories, categoryOrder } from '../data/software.js';
+import { software as catalog, categories, categoryOrder } from '../data/software.js';
 import SoftwareCard from '../components/SoftwareCard.jsx';
 import AppLogo from '../components/AppLogo.jsx';
 import { TomatoMark } from '../components/Brand.jsx';
@@ -11,6 +11,10 @@ const FACTS = [
   ['Office-compatible', 'Docs, Sheets and Slides open and save .docx, .xlsx and .pptx files.'],
   ['Light and dark', 'Every app follows your device theme and works on phones too.'],
 ];
+
+// External products (own site, own sign-in) get their own landing section instead of an app card.
+const software = catalog.filter((s) => !s.url);
+const erp = catalog.find((s) => s.id === 'colleges');
 
 // Flagship and newest apps shown in the hero (max 5); the full catalog is below.
 const HERO_IDS = ['docs', 'sheets', 'slides', 'pdf', 'photo'];
@@ -70,6 +74,31 @@ export default function Home() {
           <div key={t} className="fact"><b>{t}</b><span>{d}</span></div>
         ))}
       </section>
+
+      {erp && (
+        <section className="wrap erp-band" aria-labelledby="erp-title">
+          <div className="erp-grid">
+            <div className="erp-copy">
+              <p className="erp-eyebrow">Featured product</p>
+              <h2 id="erp-title">{erp.name}</h2>
+              <p className="erp-lead">{erp.description}</p>
+              <div className="hero-actions">
+                <a className="btn primary lg" href={erp.url} target="_blank" rel="noopener noreferrer">Open Techomato Colleges</a>
+                <Link className="btn ghost lg" to={`/software/${erp.id}`}>Learn more</Link>
+              </div>
+              <p className="erp-note">Opens colleges.techomato.com · Separate sign-in required</p>
+            </div>
+            <ul className="erp-tiles">
+              {erp.highlights.map(([t, d, icon]) => (
+                <li key={t}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={icon} /></svg>
+                  <b>{t}</b><span>{d}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section className="wrap" id="apps">
         <div className="filters">

@@ -33,7 +33,9 @@ export default function SoftwareCard({ item }) {
           {!available && <span className="badge badge-soon">Coming soon</span>}
           {available && <span className="badge">{item.category}</span>}
         </div>
-        {available && item.launch ? (
+        {available && item.url ? (
+          <a className="btn primary" href={item.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${item.name}`}>Open</a>
+        ) : available && item.launch ? (
           <Link className="btn primary" to={item.launch} aria-label={`Open ${item.name}`}>Open</Link>
         ) : (
           <Link className="btn ghost" to={`/software/${item.id}`}>Details</Link>
