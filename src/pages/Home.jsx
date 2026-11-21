@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { software as catalog, categories, categoryOrder } from '../data/software.js';
 import SoftwareCard from '../components/SoftwareCard.jsx';
 import AppLogo from '../components/AppLogo.jsx';
@@ -8,7 +8,6 @@ import { TomatoMark } from '../components/Brand.jsx';
 const FACTS = [
   ['No sign-up', 'Open an app and start. No account, no install.'],
   ['Private by design', 'Your files are saved on your own device, not on a server.'],
-  ['Office-compatible', 'Docs, Sheets and Slides open and save .docx, .xlsx and .pptx files.'],
   ['Light and dark', 'Every app follows your device theme and works on phones too.'],
 ];
 
@@ -17,27 +16,22 @@ const software = catalog.filter((s) => !s.url);
 const erp = catalog.find((s) => s.id === 'colleges');
 
 // Flagship and newest apps shown in the hero (max 5); the full catalog is below.
-const HERO_IDS = ['docs', 'sheets', 'slides', 'pdf', 'photo'];
+const HERO_IDS = ['pdf', 'photo', 'audio', 'video', '3d'];
 const heroApps = HERO_IDS.map((id) => software.find((s) => s.id === id)).filter((s) => s && s.status === 'available');
 
 export default function Home() {
-  const [params, setParams] = useSearchParams();
-  const platform = params.get('platform') || 'all';
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All');
   const apps = software.filter((s) => s.status === 'available');
 
-  const setPlatform = (p) => (p === 'all' ? setParams({}) : setParams({ platform: p }));
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return software.filter((s) => {
-      if (platform !== 'all' && !s.platforms.includes(platform)) return false;
       if (category !== 'All' && s.category !== category) return false;
       if (!q) return true;
       return (s.name + ' ' + s.tagline + ' ' + s.category + ' ' + s.features.join(' ')).toLowerCase().includes(q);
     });
-  }, [query, platform, category]);
+  }, [query, category]);
 
   const available = filtered.filter((s) => s.status === 'available');
   const soon = filtered.filter((s) => s.status !== 'available');
@@ -50,12 +44,11 @@ export default function Home() {
             <p className="eyebrow"><TomatoMark size={20} /> Techomato Softwares</p>
             <h1>Everyday apps, <span className="hl">freshly picked.</span></h1>
             <p className="lead">
-              {apps.length} full-featured apps that run right in your browser: documents, spreadsheets, slides, tasks, notes,
-              calendar, money and habits, handy tools like a PDF toolkit, password vault, flashcards, whiteboard and code playground, plus a creative studio for photos, audio, video, motion graphics and 3D. Windows downloads are added as they are released.
+              {apps.length} full-featured apps that run right in your browser: a PDF toolkit, money tracker, password vault, image converter, mind maps and flowcharts, plus a creative studio for photos, audio, video, motion graphics and 3D. Windows downloads are added as they are released.
             </p>
             <div className="hero-actions">
               <a className="btn primary lg" href="#apps">Browse all apps</a>
-              <Link className="btn lg" to="/app/docs">Start a document</Link>
+              <Link className="btn lg" to="/app/pdf">Open the PDF toolkit</Link>
             </div>
           </div>
           <div className="hero-tiles" aria-label="Apps">
@@ -103,11 +96,6 @@ export default function Home() {
       <section className="wrap" id="apps">
         <div className="filters">
           <input type="search" className="search" placeholder={`Search ${apps.length} apps and features...`} value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search software" />
-          <div className="chips" role="group" aria-label="Platform">
-            {[['all', 'All platforms'], ['browser', 'Browser'], ['windows', 'Windows']].map(([k, label]) => (
-              <button key={k} className={'chip' + (platform === k ? ' on' : '')} onClick={() => setPlatform(k)}>{label}</button>
-            ))}
-          </div>
           <div className="chips" role="group" aria-label="Category">
             {categories.map((c) => (
               <button key={c} className={'chip' + (category === c ? ' on' : '')} onClick={() => setCategory(c)}>{c}</button>

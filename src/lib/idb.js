@@ -9,4 +9,3 @@ function open() {
 const run = async (mode, fn) => { const db = await open(); return new Promise((res, rej) => { const t = db.transaction(STORE, mode); const out = fn(t.objectStore(STORE)); t.oncomplete = () => { db.close(); res(out && out.result); }; t.onerror = () => { db.close(); rej(t.error); }; }); };
 export const idbGet = (k) => run('readonly', (s) => s.get(k)).catch(() => undefined);
 export const idbSet = (k, v) => run('readwrite', (s) => s.put(v, k)).then(() => true).catch(() => false);
-export const idbDel = (k) => run('readwrite', (s) => s.delete(k)).catch(() => false);

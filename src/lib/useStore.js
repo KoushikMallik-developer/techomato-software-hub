@@ -16,10 +16,12 @@ export function useStore(name, initial, migrate) {
   const key = `techomato:${name}`;
   const mk = () => (typeof initial === 'function' ? initial() : initial);
   const [state, setState] = useState(() => {
+    const raw = localStorage.getItem(key);
     try {
-      const raw = localStorage.getItem(key);
       if (raw) { const v = JSON.parse(raw); if (v !== null && typeof v === 'object') return migrate ? migrate(v) : v; }
-    } catch { /* corrupted storage: start fresh */ }
+    } catch { /* unreadable: start fresh, but keep the old text so the next save cannot destroy it */
+      try { localStorage.setItem(key + ':unreadable', raw); } catch { /* storage full */ }
+    }
     return mk();
   });
   const ref = useRef(state);

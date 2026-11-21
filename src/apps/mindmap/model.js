@@ -5,6 +5,8 @@ export const BRANCH = ['#e5484d', '#f2a93b', '#3aa676', '#2f8fdd', '#8e5ad7', '#
 export const THEMES = { light: { bg: '#ffffff', ink: '#1b1f24', root: '#2b3441', rootInk: '#ffffff', leaf: '#ffffff' }, soft: { bg: '#f3f5f8', ink: '#1b1f24', root: '#2b3441', rootInk: '#ffffff', leaf: '#ffffff' }, dark: { bg: '#15181d', ink: '#e8eaed', root: '#e8eaed', rootInk: '#15181d', leaf: '#232830' } };
 export const LAYOUTS = [['map', 'Mind map (both sides)'], ['right', 'Right'], ['left', 'Left'], ['down', 'Org chart (down)']];
 export const blankMap = (name = 'Untitled map') => { const r = uid(); return { id: uid(), name, layout: 'map', theme: 'light', nodes: [{ id: r, p: null, t: 'Central idea' }], sel: r, view: null }; };
+/* a map needs at least one node, and every node must be an object, or the page crashes on load */
+export const usableNodes = (a) => Array.isArray(a) && a.length > 0 && a.every((n) => n && typeof n === 'object');
 export const kids = (nodes, id) => nodes.filter((n) => n.p === id);
 export const root = (nodes) => nodes.find((n) => n.p === null) || nodes[0];
 export const subtreeIds = (nodes, id) => { const out = [id]; for (let i = 0; i < out.length; i++) kids(nodes, out[i]).forEach((k) => out.push(k.id)); return out; };
@@ -88,16 +90,14 @@ export function fromOutline(text, name = 'Imported map') {
     const done = /^\[( |x|X)\]\s+/.exec(t); const n = { id: uid(), p: null, t: t.replace(/^\[( |x|X)\]\s+/, '') }; if (done) n.done = done[1].toLowerCase() === 'x';
     while (stack.length && stack[stack.length - 1].level >= level) stack.pop();
     if (!nodes.length) { n.p = null; } else n.p = stack.length ? stack[stack.length - 1].id : nodes[0].id;
-    if (nodes.length && !stack.length && level === 0) n.p = nodes[0].id;
     nodes.push(n); stack.push({ id: n.id, level });
   }
   if (!nodes.length) return null;
-  if (nodes.filter((n) => n.p === null).length > 1) { /* never happens: only first has null */ }
   return { ...blankMap(name), nodes, sel: nodes[0].id };
 }
 export function fromOpml(xml, name) {
   const doc = new DOMParser().parseFromString(xml, 'text/xml'); const body = doc.querySelector('body'); if (!body) return null; const nodes = [];
-  const rec = (el, p) => { const n = { id: uid(), p, t: el.getAttribute('text') || '' }; const note = el.getAttribute('_note'); if (note) n.note = note; nodes.push(n); [...el.children].filter((c) => c.tagName === 'outline').forEach((c) => rec(c, n.id)); };
+  const rec = (el, p) => { const n = { id: uid(), p, t: el.getAttribute('text') ?? el.getAttribute('title') ?? '' }; const note = el.getAttribute('_note'); if (note) n.note = note; nodes.push(n); [...el.children].filter((c) => c.tagName === 'outline').forEach((c) => rec(c, n.id)); };
   const tops = [...body.children].filter((c) => c.tagName === 'outline'); if (!tops.length) return null;
   if (tops.length === 1) rec(tops[0], null); else { const r = { id: uid(), p: null, t: (doc.querySelector('title') || {}).textContent || name || 'Imported map' }; nodes.push(r); tops.forEach((t) => rec(t, r.id)); }
   return { ...blankMap(name || (doc.querySelector('title') || {}).textContent || 'Imported map'), nodes, sel: nodes[0].id };

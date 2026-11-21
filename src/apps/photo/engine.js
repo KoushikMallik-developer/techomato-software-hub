@@ -62,8 +62,9 @@ export function blurredCopy(src, radius) { const g = ctxOf(src); const img = g.g
 export function sharpenedCopy(src, amount = 1.2, radius = 1.2) { const g = ctxOf(src); const img = g.getImageData(0, 0, src.width, src.height); const bl = gaussian(img, radius); const o = new Uint8ClampedArray(img.data.length); for (let i = 0; i < o.length; i += 4) { for (let k = 0; k < 3; k++) o[i + k] = img.data[i + k] + (img.data[i + k] - bl[i + k]) * amount; o[i + 3] = img.data[i + 3]; } const c = mk(src.width, src.height); ctxOf(c).putImageData(new ImageData(o, src.width, src.height), 0, 0); return c; }
 export function toneCopy(src, amt) { const g = ctxOf(src); const img = g.getImageData(0, 0, src.width, src.height); const d = img.data; const k = Math.pow(2, amt); for (let i = 0; i < d.length; i += 4) { d[i] *= k; d[i + 1] *= k; d[i + 2] *= k; } const c = mk(src.width, src.height); ctxOf(c).putImageData(img, 0, 0); return c; }
 /* paint `source` through brush tip `tip` at (x,y) onto g with strength alpha */
+let scratch = null; // one reusable dab canvas: a new canvas per stamp made big brushes lag
 export function paintFrom(g, source, tip, x, y, alpha, ox = 0, oy = 0) {
-  const n = tip.width, t = mk(n, n), tg = t.getContext('2d'); tg.drawImage(source, x - n / 2 + ox, y - n / 2 + oy, n, n, 0, 0, n, n); tg.globalCompositeOperation = 'destination-in'; tg.drawImage(tip, 0, 0);
+  const n = tip.width; if (!scratch || scratch.width !== n) scratch = mk(n, n); const t = scratch, tg = t.getContext('2d'); tg.globalCompositeOperation = 'source-over'; tg.clearRect(0, 0, n, n); tg.drawImage(source, x - n / 2 + ox, y - n / 2 + oy, n, n, 0, 0, n, n); tg.globalCompositeOperation = 'destination-in'; tg.drawImage(tip, 0, 0);
   g.save(); g.globalAlpha = alpha; g.drawImage(t, x - n / 2, y - n / 2); g.restore();
 }
 export function pickColor(c, x, y) { x = Math.floor(x); y = Math.floor(y); if (x < 0 || y < 0 || x >= c.width || y >= c.height) return null; const d = ctxOf(c).getImageData(x, y, 1, 1).data; return '#' + [d[0], d[1], d[2]].map((v) => v.toString(16).padStart(2, '0')).join(''); }

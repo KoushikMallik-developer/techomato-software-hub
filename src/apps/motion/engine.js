@@ -73,6 +73,8 @@ export function mkLayer(type, comp, o = {}) {
 }
 export const PROPS = [['x', 'Position X', -5000, 5000, 'px'], ['y', 'Position Y', -5000, 5000, 'px'], ['ax', 'Anchor X', -5000, 5000, 'px'], ['ay', 'Anchor Y', -5000, 5000, 'px'], ['sx', 'Scale X', -1000, 1000, '%'], ['sy', 'Scale Y', -1000, 1000, '%'], ['rot', 'Rotation', -3600, 3600, '°'], ['op', 'Opacity', 0, 100, '%']];
 export const propsOf = (L) => (L.type === 'text' ? [...PROPS, ['reveal', 'Reveal', 0, 100, '%']] : PROPS);
+/* a composition the drawing code can run on; anything else would crash the page, and the autosave would bring it back every visit */
+export const validComp = (c) => !!c && Array.isArray(c.layers) && c.layers.every((L) => L && typeof L.p === 'object' && L.p && Array.isArray(L.fx) && L.fx.every((f) => f && f.p && typeof f.p === 'object') && (L.type !== 'text' || (L.text && typeof L.text.str === 'string')) && (L.type !== 'shape' || (L.shape && typeof L.shape === 'object')));
 export function compDefaults() { return { name: 'Comp 1', w: 1280, h: 720, fps: 30, dur: 6, bg: '#16171a', layers: [] }; }
 
 /* ---------- transforms ---------- */
@@ -94,13 +96,12 @@ function shapePath(g, S, w, h) {
   else if (S.kind === 'star' || S.kind === 'poly') { const n = Math.max(3, Math.round(S.points)); const star = S.kind === 'star'; const cnt = star ? n * 2 : n; for (let i = 0; i < cnt; i++) { const a = -Math.PI / 2 + (i * 2 * Math.PI) / cnt; const r = star && i % 2 ? S.inner : 1; const x = w / 2 + Math.cos(a) * (w / 2) * r, y = h / 2 + Math.sin(a) * (h / 2) * r; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.closePath(); }
   else { const r = Math.min(S.radius, w / 2, h / 2); if (r > 0) { g.moveTo(r, 0); g.arcTo(w, 0, w, h, r); g.arcTo(w, h, 0, h, r); g.arcTo(0, h, 0, 0, r); g.arcTo(0, 0, w, 0, r); g.closePath(); } else g.rect(0, 0, w, h); }
 }
-function drawContent(g, L, v, imgs, sc) {
+function drawContent(g, L, v, imgs) {
   if (L.type === 'solid') { g.fillStyle = L.color; g.fillRect(0, 0, L.w, L.h); }
   else if (L.type === 'shape') { const S = L.shape; shapePath(g, S, L.w, L.h); if (S.hasFill) { g.fillStyle = S.fill; g.fill(); } if (S.sw > 0) { g.lineWidth = S.sw; g.strokeStyle = S.stroke; g.lineJoin = 'round'; g.stroke(); } }
   else if (L.type === 'text') { const T = L.text; const lines = T.str.split('\n'); const total = lines.join('').length; let left = Math.round((total * clamp(v.reveal, 0, 100)) / 100); g.font = fontStr(T); g.fillStyle = T.color; g.textBaseline = 'middle'; g.textAlign = T.align; const x = T.align === 'left' ? 4 : T.align === 'right' ? L.w - 4 : L.w / 2;
     lines.forEach((ln, i) => { const n = Math.min(ln.length, left); left -= n; if (n > 0) g.fillText(ln.slice(0, n), x, 4 + T.size * 0.6 + i * T.size * 1.2); }); }
   else if (L.type === 'image') { const im = imgs.get(L.img); if (im && im.complete && im.naturalWidth) g.drawImage(im, 0, 0, L.w, L.h); else { g.fillStyle = '#444'; g.fillRect(0, 0, L.w, L.h); } }
-  void sc;
 }
 const pools = new Map();
 function slot(W, H, i) { const key = `${W}x${H}`; let a = pools.get(key); if (!a) { a = []; pools.set(key, a); if (pools.size > 4) pools.delete(pools.keys().next().value); } let c = a[i]; if (!c) { c = a[i] = document.createElement('canvas'); c.width = W; c.height = H; c._g = c.getContext('2d'); } const g = c._g; g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; g.filter = 'none'; g.imageSmoothingEnabled = true; g.clearRect(0, 0, W, H); return c; }
@@ -130,8 +131,8 @@ export function renderComp(g, W, H, comp, t, imgs, opts = {}) {
     const L = comp.layers[i]; if (!L.vis || (anySolo && !L.solo) || !isActive(L, t) || L.type === 'null') continue;
     const v = values(comp, L, t); if (v.op <= 0) continue; const m = worldM(comp, L, t); const blend = (BLENDS.find((b) => b[0] === L.blend) || BLENDS[0])[2];
     const hasFx = L.fx.some((f) => f.on);
-    if (!hasFx) { g.save(); g.setTransform(m[0] * sc, m[1] * sc, m[2] * sc, m[3] * sc, m[4] * sc, m[5] * sc); g.globalAlpha = clamp(v.op / 100, 0, 1); g.globalCompositeOperation = blend; drawContent(g, L, v, imgs, sc); g.restore(); }
-    else { const base = slot(W, H, 0); const bg = base._g; bg.setTransform(m[0] * sc, m[1] * sc, m[2] * sc, m[3] * sc, m[4] * sc, m[5] * sc); drawContent(bg, L, v, imgs, sc); bg.setTransform(1, 0, 0, 1, 0, 0); const out = runFx(W, H, sc, L, t, i); g.save(); g.globalAlpha = clamp(v.op / 100, 0, 1); g.globalCompositeOperation = blend; g.drawImage(out, 0, 0); g.restore(); }
+    if (!hasFx) { g.save(); g.setTransform(m[0] * sc, m[1] * sc, m[2] * sc, m[3] * sc, m[4] * sc, m[5] * sc); g.globalAlpha = clamp(v.op / 100, 0, 1); g.globalCompositeOperation = blend; drawContent(g, L, v, imgs); g.restore(); }
+    else { const base = slot(W, H, 0); const bg = base._g; bg.setTransform(m[0] * sc, m[1] * sc, m[2] * sc, m[3] * sc, m[4] * sc, m[5] * sc); drawContent(bg, L, v, imgs); bg.setTransform(1, 0, 0, 1, 0, 0); const out = runFx(W, H, sc, L, t, i); g.save(); g.globalAlpha = clamp(v.op / 100, 0, 1); g.globalCompositeOperation = blend; g.drawImage(out, 0, 0); g.restore(); }
   }
 }
 

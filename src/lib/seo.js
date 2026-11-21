@@ -7,7 +7,7 @@ export const SEO_START = '<!--seo-->';
 export const SEO_END = '<!--/seo-->';
 
 const SITE_TITLE = 'Techomato Softwares – Free apps that run in your browser';
-const SITE_DESC = 'Free desktop-class apps in your browser: Docs, Sheets, Slides, PDF toolkit, photo, audio and video studios and more. No sign-up, and your files stay on your device.';
+const SITE_DESC = 'Free desktop-class apps in your browser: PDF toolkit, photo, audio, video and 3D studios, money tracker, password vault and more. No sign-up, and your files stay on your device.';
 
 const LD_CATEGORY = {
   Office: 'BusinessApplication', Productivity: 'BusinessApplication', Business: 'BusinessApplication',
@@ -30,7 +30,7 @@ function softwareMeta(item) {
       '@context': 'https://schema.org', '@type': 'SoftwareApplication',
       name: item.name, description: item.description, url: abs(`/software/${item.id}`),
       applicationCategory: LD_CATEGORY[item.category] || 'UtilitiesApplication',
-      operatingSystem: item.platforms.includes('windows') ? 'Windows, any modern web browser' : 'Any modern web browser',
+      operatingSystem: 'Any modern web browser',
       ...(item.url ? {} : { offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }), // external products may be paid
     });
   }

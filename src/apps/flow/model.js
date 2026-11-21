@@ -10,6 +10,10 @@ export const DEFSIZE = { process: [150, 64], terminator: [150, 54], decision: [1
 export const newNode = (shape, x, y, text) => { const [w, h] = DEFSIZE[shape] || [150, 64]; return { id: uid(), shape, x: Math.round(x - w / 2), y: Math.round(y - h / 2), w, h, text: text ?? (shape === 'text' ? 'Text' : shape === 'terminator' ? 'Start' : shape === 'decision' ? 'Decision?' : SHAPES.find((s) => s[0] === shape)[1]), fill: shape === 'text' ? 'none' : '#ffffff', stroke: '#374151', fs: 14 }; };
 export const blankDiagram = (name = 'Untitled flowchart') => ({ id: uid(), name, nodes: [], edges: [], view: null });
 const FONT = 'Inter,Segoe UI,system-ui,sans-serif';
+// Files and backups are untrusted and the SVG is inserted as raw HTML, so coerce geometry to numbers and colours to a safe pattern.
+const num = (v) => (Number.isFinite(+v) ? +v : 0);
+const colour = (v, d) => (/^(#[0-9a-f]{3,8}|[a-z]{3,20})$/i.test(v) ? v : d);
+const cleanNode = (n) => ({ ...n, x: num(n.x), y: num(n.y), w: num(n.w), h: num(n.h), fs: num(n.fs) || 14, fill: colour(n.fill, '#ffffff'), stroke: colour(n.stroke, '#374151') });
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function shapePath(n) {
@@ -30,7 +34,8 @@ const inset = (n) => (n.shape === 'decision' ? 0.28 : n.shape === 'circle' ? 0.1
 export function textLines(n) { const maxW = Math.max(20, n.w * (1 - inset(n) * 2) - 8); return wrapText(n.text || '', maxW, n.fs, 'Sans', false); }
 /* fit the node to its text (grows only) */
 export function fitNode(n) { const lines = wrapText(n.text || '', Math.max(20, n.w * (1 - inset(n) * 2) - 8), n.fs, 'Sans', false); const need = lines.length * n.fs * 1.3 + 16; const k = n.shape === 'decision' ? 1.7 : n.shape === 'circle' ? 1.35 : 1; return need * k > n.h ? { ...n, h: Math.ceil(need * k) } : n; }
-export function nodeSvg(n, sel) {
+export function nodeSvg(n0, sel) {
+  const n = cleanNode(n0);
   const lines = textLines(n); const lh = n.fs * 1.3; const cy = n.y + n.h / 2 - ((lines.length - 1) * lh) / 2;
   const body = n.shape === 'text' ? '' : `<path d="${shapePath(n)}" fill="${n.fill}" stroke="${n.stroke}" stroke-width="1.8" stroke-linejoin="round"/>`;
   const txt = lines.map((l, i) => `<text x="${n.x + n.w / 2}" y="${cy + i * lh + n.fs * 0.35}" text-anchor="middle" font-family="${FONT}" font-size="${n.fs}" fill="#111827">${esc(l)}</text>`).join('');
@@ -61,8 +66,9 @@ export function route(e, a, b) {
   const last = e.route === 'curve' ? { x: pts[3].x - pts[2].x, y: pts[3].y - pts[2].y } : { x: P[P.length - 1].x - P[P.length - 2].x, y: P[P.length - 1].y - P[P.length - 2].y };
   return { d, pts: P, p1, p2, mid, angle: Math.atan2(last.y, last.x) };
 }
-export function edgeSvg(e, a, b, sel) {
-  const g = route(e, a, b); const col = e.color || '#374151'; const sw = e.style === 'thick' ? 3.2 : 1.8; const dash = e.style === 'dashed' ? ' stroke-dasharray="7 5"' : ''; const parts = [`<path d="${g.d}" fill="none" stroke="${col}" stroke-width="${sw}"${dash} stroke-linecap="round"/>`];
+export function edgeSvg(e, a0, b0, sel) {
+  const a = cleanNode(a0), b = cleanNode(b0);
+  const g = route(e, a, b); const col = colour(e.color, '#374151'); const sw = e.style === 'thick' ? 3.2 : 1.8; const dash = e.style === 'dashed' ? ' stroke-dasharray="7 5"' : ''; const parts = [`<path d="${g.d}" fill="none" stroke="${col}" stroke-width="${sw}"${dash} stroke-linecap="round"/>`];
   const head = (p, ang) => { const L = 11 + sw, W = 5 + sw * 0.5; const c = Math.cos(ang), s = Math.sin(ang); return `<path d="M${p.x} ${p.y}L${p.x - c * L - s * W} ${p.y - s * L + c * W}L${p.x - c * L + s * W} ${p.y - s * L - c * W}Z" fill="${col}"/>`; };
   if (e.arrow !== 'none') parts.push(head(g.p2, g.angle)); if (e.arrow === 'both') { const f = g.pts[0], n2 = g.pts[1]; parts.push(head(f, Math.atan2(f.y - n2.y, f.x - n2.x))); }
   if (e.label) { const w = measure(e.label, 12.5, 'Sans', false) + 12; parts.push(`<rect x="${g.mid.x - w / 2}" y="${g.mid.y - 10}" width="${w}" height="20" rx="4" fill="#ffffff" stroke="#e5e7eb"/><text x="${g.mid.x}" y="${g.mid.y + 4.5}" text-anchor="middle" font-family="${FONT}" font-size="12.5" fill="#111827">${esc(e.label)}</text>`); }

@@ -20,7 +20,9 @@ export async function decode(file) {
     let w = img.naturalWidth, h = img.naturalHeight;
     if (!w || !h) { w = 1024; h = 1024; }
     // rasterise now so SVGs and large photos are drawn once and reused
-    const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h);
+    const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
+    if (!g) throw new Error('Image is too large for this browser'); // browsers refuse canvases over ~16 million pixels
+    g.drawImage(img, 0, 0, w, h);
     return { canvas: c, w, h };
   } finally { setTimeout(() => URL.revokeObjectURL(url), 2000); }
 }

@@ -4,7 +4,12 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/((?!assets/|.*\\.).*)", "destination": "/index.html" }],
+  "redirects": [{ "source": "/:kind(software|app)/:id(docs|sheets|slides|forms|todo|planner|notes|calendar|writer|cards|habits|paint|whiteboard|calculator|clock|recorder|code|desktop-suite)", "destination": "/", "permanent": false }],
+  "rewrites": [
+    { "source": "/software/:id(money|photo|audio|video|motion|3d|pdf|mindmap|flow|convert|vault|colleges)", "destination": "/software/:id/index.html" },
+    { "source": "/app/:id(money|photo|audio|video|motion|3d|pdf|mindmap|flow|convert|vault)", "destination": "/app/:id/index.html" },
+    { "source": "/((?!assets/|.*\\.).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -14,6 +19,7 @@
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }

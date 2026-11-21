@@ -28,7 +28,7 @@ export function scaleMesh(m, s) { return { ...m, v: m.v.map((x) => x * s) }; }
 export function faceNormal(m, f) { const n = [0, 0, 0]; for (let i = 0; i < f.length; i++) { const a = P(m, f[i]), b = P(m, f[(i + 1) % f.length]); n[0] += (a[1] - b[1]) * (a[2] + b[2]); n[1] += (a[2] - b[2]) * (a[0] + b[0]); n[2] += (a[0] - b[0]) * (a[1] + b[1]); } return v3.norm(n); }
 export function vertexNormals(m) { const n = new Float64Array(m.v.length); for (const f of m.f) { const fn = faceNormal(m, f); let area = 0; const a = P(m, f[0]); for (let i = 1; i < f.length - 1; i++) area += v3.len(v3.cross(v3.sub(P(m, f[i]), a), v3.sub(P(m, f[i + 1]), a))); area = Math.max(area, 1e-9); for (const i of f) { n[i * 3] += fn[0] * area; n[i * 3 + 1] += fn[1] * area; n[i * 3 + 2] += fn[2] * area; } } for (let i = 0; i < n.length; i += 3) { const l = Math.hypot(n[i], n[i + 1], n[i + 2]) || 1; n[i] /= l; n[i + 1] /= l; n[i + 2] /= l; } return n; }
 export function triangulate(m) { const t = [], of = []; m.f.forEach((f, fi) => { for (let i = 1; i < f.length - 1; i++) { t.push(f[0], f[i], f[i + 1]); of.push(fi); } }); return { tris: t, faceOf: of }; }
-export function edgesOf(m) { const map = new Map(); m.f.forEach((f, fi) => { for (let i = 0; i < f.length; i++) { const a = f[i], b = f[(i + 1) % f.length]; const k = a < b ? a * 1e6 + b : b * 1e6 + a; let e = map.get(k); if (!e) { e = { a: Math.min(a, b), b: Math.max(a, b), faces: [] }; map.set(k, e); } e.faces.push(fi); } }); return [...map.values()]; }
+export function edgesOf(m) { const map = new Map(); m.f.forEach((f, fi) => { for (let i = 0; i < f.length; i++) { const a = f[i], b = f[(i + 1) % f.length]; const k = a < b ? a * 2 ** 26 + b : b * 2 ** 26 + a; let e = map.get(k); if (!e) { e = { a: Math.min(a, b), b: Math.max(a, b), faces: [] }; map.set(k, e); } e.faces.push(fi); } }); return [...map.values()]; }
 export function bounds(m) { const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity]; for (let i = 0; i < m.v.length; i += 3) for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], m.v[i + k]); hi[k] = Math.max(hi[k], m.v[i + k]); } if (!isFinite(lo[0])) return { lo: [0, 0, 0], hi: [0, 0, 0] }; return { lo, hi }; }
 export function geom(m, smooth) { // triangle-expanded buffers for GL
   const { tris, faceOf } = triangulate(m); const n = tris.length; const pos = new Float32Array(n * 3), nrm = new Float32Array(n * 3), snrm = new Float32Array(n * 3); const vn = vertexNormals(m);
@@ -41,11 +41,11 @@ export function geom(m, smooth) { // triangle-expanded buffers for GL
 /* ---------- modifiers ---------- */
 function cc(m) {
   const nv = nVerts(m), nf = m.f.length; const fp = m.f.map((f) => avg(f.map((i) => P(m, i)))); const emap = new Map(); const elist = [];
-  m.f.forEach((f, fi) => { for (let i = 0; i < f.length; i++) { const a = f[i], b = f[(i + 1) % f.length]; const k = a < b ? a * 1e6 + b : b * 1e6 + a; let e = emap.get(k); if (!e) { e = { a, b, faces: [], id: elist.length }; emap.set(k, e); elist.push(e); } e.faces.push(fi); } });
+  m.f.forEach((f, fi) => { for (let i = 0; i < f.length; i++) { const a = f[i], b = f[(i + 1) % f.length]; const k = a < b ? a * 2 ** 26 + b : b * 2 ** 26 + a; let e = emap.get(k); if (!e) { e = { a, b, faces: [], id: elist.length }; emap.set(k, e); elist.push(e); } e.faces.push(fi); } });
   const ep = elist.map((e) => { const A = P(m, e.a), B = P(m, e.b); return e.faces.length === 2 ? avg([A, B, fp[e.faces[0]], fp[e.faces[1]]]) : avg([A, B]); });
   const vfaces = Array.from({ length: nv }, () => []), vedges = Array.from({ length: nv }, () => []); m.f.forEach((f, fi) => f.forEach((i) => vfaces[i].push(fi))); elist.forEach((e) => { vedges[e.a].push(e); vedges[e.b].push(e); });
   const out = []; for (let i = 0; i < nv; i++) { const p = P(m, i); const es = vedges[i]; if (!es.length) { out.push(p); continue; } const bnd = es.filter((e) => e.faces.length < 2); if (bnd.length >= 2) { const o = bnd.map((e) => P(m, e.a === i ? e.b : e.a)); out.push(v3.mul(v3.add(v3.mul(p, 6), v3.add(o[0], o[1])), 1 / 8)); } else { const n = es.length; const F = avg(vfaces[i].map((fi) => fp[fi])); const R = avg(es.map((e) => avg([P(m, e.a), P(m, e.b)]))); out.push(v3.mul(v3.add(v3.add(F, v3.mul(R, 2)), v3.mul(p, n - 3)), 1 / n)); } }
-  for (const p of fp) out.push(p); for (const p of ep) out.push(p); const edge = (a, b) => nv + nf + emap.get(a < b ? a * 1e6 + b : b * 1e6 + a).id; const faces = [];
+  for (const p of fp) out.push(p); for (const p of ep) out.push(p); const edge = (a, b) => nv + nf + emap.get(a < b ? a * 2 ** 26 + b : b * 2 ** 26 + a).id; const faces = [];
   m.f.forEach((f, fi) => { for (let i = 0; i < f.length; i++) faces.push([f[i], edge(f[i], f[(i + 1) % f.length]), nv + fi, edge(f[(i + f.length - 1) % f.length], f[i])]); });
   return mk(out, faces);
 }
@@ -76,7 +76,7 @@ export function deleteVerts(m, vs) { return compact({ v: m.v, f: m.f.filter((f) 
 export function extrudeFaces(m, fs, dist) {
   const nv = nVerts(m); const v = [...m.v]; const dup = new Map(); const vnrm = new Map(); for (const fi of fs) { const fn = faceNormal(m, m.f[fi]); for (const i of m.f[fi]) { const a = vnrm.get(i) || [0, 0, 0]; vnrm.set(i, v3.add(a, fn)); } }
   for (const [i, n] of vnrm) { const nn = v3.norm(n); dup.set(i, v.length / 3); v.push(m.v[i * 3] + nn[0] * dist, m.v[i * 3 + 1] + nn[1] * dist, m.v[i * 3 + 2] + nn[2] * dist); }
-  const edgeCount = new Map(); const dirEdge = []; for (const fi of fs) { const f = m.f[fi]; for (let i = 0; i < f.length; i++) { const a = f[i], b = f[(i + 1) % f.length]; const k = a < b ? a * 1e6 + b : b * 1e6 + a; edgeCount.set(k, (edgeCount.get(k) || 0) + 1); dirEdge.push([a, b, k]); } }
+  const edgeCount = new Map(); const dirEdge = []; for (const fi of fs) { const f = m.f[fi]; for (let i = 0; i < f.length; i++) { const a = f[i], b = f[(i + 1) % f.length]; const k = a < b ? a * 2 ** 26 + b : b * 2 ** 26 + a; edgeCount.set(k, (edgeCount.get(k) || 0) + 1); dirEdge.push([a, b, k]); } }
   const f = m.f.map((face, fi) => (fs.has(fi) ? face.map((i) => dup.get(i)) : face)); const newFaces = [...fs]; for (const [a, b, k] of dirEdge) if (edgeCount.get(k) === 1) f.push([a, b, dup.get(b), dup.get(a)]);
   void nv; return { mesh: { v, f }, faces: newFaces };
 }
@@ -90,7 +90,7 @@ export function insetFaces(m, fs, amt) {
   return { mesh: { v, f }, faces: newFaces };
 }
 export function subdivideFaces(m, fs) {
-  const v = [...m.v]; const f = []; const mids = new Map(); const mid = (a, b) => { const k = a < b ? a * 1e6 + b : b * 1e6 + a; if (mids.has(k)) return mids.get(k); const p = avg([P(m, a), P(m, b)]); v.push(...p); mids.set(k, v.length / 3 - 1); return v.length / 3 - 1; }; const nfs = [];
+  const v = [...m.v]; const f = []; const mids = new Map(); const mid = (a, b) => { const k = a < b ? a * 2 ** 26 + b : b * 2 ** 26 + a; if (mids.has(k)) return mids.get(k); const p = avg([P(m, a), P(m, b)]); v.push(...p); mids.set(k, v.length / 3 - 1); return v.length / 3 - 1; }; const nfs = [];
   m.f.forEach((face, fi) => { if (fs && !fs.has(fi)) { f.push(face); return; } const c = avg(face.map((i) => P(m, i))); v.push(...c); const ci = v.length / 3 - 1; const k = face.length; for (let i = 0; i < k; i++) { nfs.push(f.length); f.push([face[i], mid(face[i], face[(i + 1) % k]), ci, mid(face[(i + k - 1) % k], face[i])]); } });
   return { mesh: { v, f }, faces: nfs };
 }
@@ -128,8 +128,9 @@ export function sculpt(m, o) { // o: {type, hit, normal, radius, strength, sign,
 export function toOBJ(items) { let s = '# Techomato 3D Studio\n'; let off = 1; for (const { name, mesh, M } of items) { s += `o ${name.replace(/\s+/g, '_')}\n`; for (let i = 0; i < mesh.v.length; i += 3) { const p = m4.point(M, [mesh.v[i], mesh.v[i + 1], mesh.v[i + 2]]); s += `v ${p[0].toFixed(6)} ${p[1].toFixed(6)} ${p[2].toFixed(6)}\n`; } for (const f of mesh.f) s += `f ${f.map((i) => i + off).join(' ')}\n`; off += mesh.v.length / 3; } return s; }
 export function parseOBJ(text) {
   const V = [], objs = []; let cur = null; const start = (n) => { cur = { name: n || 'Object', f: [] }; objs.push(cur); };
-  for (const raw of text.split(/\r?\n/)) { const l = raw.trim(); if (!l || l[0] === '#') continue; const t = l.split(/\s+/); if (t[0] === 'v') V.push([+t[1], +t[2], +t[3]]); else if (t[0] === 'o' || t[0] === 'g') { if (!cur || cur.f.length) start(t.slice(1).join(' ')); else cur.name = t.slice(1).join(' ') || cur.name; } else if (t[0] === 'f') { if (!cur) start(); const idx = t.slice(1).map((x) => { const n = parseInt(x.split('/')[0], 10); return n < 0 ? V.length + n : n - 1; }); if (idx.length >= 3 && idx.every((i) => i >= 0 && i < V.length)) cur.f.push(idx); } }
-  return objs.filter((o) => o.f.length).map((o) => { const m = compact({ v: V.flat(), f: o.f }).mesh; return { name: o.name, mesh: m }; });
+  for (const raw of text.split(/\r?\n/)) { const l = raw.trim(); if (!l || l[0] === '#') continue; const t = l.split(/\s+/); if (t[0] === 'v') { const p = [+t[1], +t[2], +t[3]]; V.push(p.every(Number.isFinite) ? p : [0, 0, 0]); } else if (t[0] === 'o' || t[0] === 'g') { if (!cur || cur.f.length) start(t.slice(1).join(' ')); else cur.name = t.slice(1).join(' ') || cur.name; } else if (t[0] === 'f') { if (!cur) start(); const idx = t.slice(1).map((x) => { const n = parseInt(x.split('/')[0], 10); return n < 0 ? V.length + n : n - 1; }); if (idx.length >= 3 && idx.every((i) => i >= 0 && i < V.length)) cur.f.push(idx); } }
+  const flat = V.flat();
+  return objs.filter((o) => o.f.length).map((o) => { const m = compact({ v: flat, f: o.f }).mesh; return { name: o.name, mesh: m }; });
 }
 export function toSTL(items) { let tris = 0; const parts = items.map(({ mesh, M }) => { const out = []; const { tris: t } = triangulate(mesh); for (let i = 0; i < t.length; i += 3) { out.push([t[i], t[i + 1], t[i + 2]].map((k) => m4.point(M, [mesh.v[k * 3], mesh.v[k * 3 + 1], mesh.v[k * 3 + 2]]))); } tris += out.length; return out; }); const buf = new ArrayBuffer(84 + tris * 50); const dv = new DataView(buf); const hd = 'Techomato 3D Studio'; for (let i = 0; i < hd.length; i++) dv.setUint8(i, hd.charCodeAt(i)); dv.setUint32(80, tris, true); let o = 84; for (const part of parts) for (const [a, b, c] of part) { const n = v3.norm(v3.cross(v3.sub(b, a), v3.sub(c, a))); for (const q of [n, a, b, c]) for (const x of q) { dv.setFloat32(o, x, true); o += 4; } dv.setUint16(o, 0, true); o += 2; } return new Uint8Array(buf); }
 export function parseSTL(buf) {

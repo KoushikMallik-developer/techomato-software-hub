@@ -9,7 +9,11 @@ import '../styles/flow.css';
 
 const SNAP = 10; const snap = (v, on) => (on ? Math.round(v / SNAP) * SNAP : v);
 const starter = () => { const d = fromMermaid(TEMPLATES[0][1], 'Login flow'); return { diagrams: [d], cur: d.id, ui: { grid: true, snap: true, panel: true } }; };
-const migrate = (d) => (d && Array.isArray(d.diagrams) && d.diagrams.length ? { cur: d.diagrams[0].id, ...d, ui: { grid: true, snap: true, panel: true, ...(d.ui || {}) } } : starter());
+/* keep only usable diagrams: a damaged item would crash the page on every load */
+const migrate = (d) => {
+  const list = d && Array.isArray(d.diagrams) ? d.diagrams.filter((g) => g && Array.isArray(g.nodes) && Array.isArray(g.edges)) : [];
+  return list.length ? { ...d, diagrams: list, cur: list.some((g) => g.id === d.cur) ? d.cur : list[0].id, ui: { grid: true, snap: true, panel: true, ...(d.ui || {}) } } : starter();
+};
 const ShapeIcon = ({ s }) => <svg width="26" height="18" viewBox="0 0 26 18" aria-hidden="true"><path d={shapePath({ shape: s, x: 2, y: 2, w: 22, h: 14 })} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />{s === 'text' && <text x="13" y="13" textAnchor="middle" fontSize="11" fill="currentColor">T</text>}</svg>;
 
 export default function FlowApp() {
@@ -102,7 +106,7 @@ export default function FlowApp() {
   const renameDiagram = async () => { const n = await ask({ kind: 'prompt', title: 'Rename flowchart', value: dg.name, okText: 'Rename' }); if (n && n.trim()) live((x) => ({ ...x, name: n.trim() })); };
   const delDiagram = async () => { if (!(await ask({ kind: 'confirm', title: 'Delete flowchart', message: `Delete "${dg.name}"?`, okText: 'Delete', danger: true }))) return; setData((d) => { const rest = d.diagrams.filter((x) => x.id !== dg.id); if (!rest.length) { const b = blankDiagram(); return { ...d, diagrams: [b], cur: b.id }; } return { ...d, diagrams: rest, cur: rest[0].id }; }); };
   const addDiagram = (d) => { if (!d) { toast('Could not read a flowchart from that text'); return false; } setData((x) => ({ ...x, diagrams: [...x.diagrams, d], cur: d.id })); setSel(new Set()); toast(`Created "${d.name}" with ${d.nodes.length} shapes`); return true; };
-  const importFile = async () => { const f = await pickFile('.mmd,.md,.txt,.json,text/plain'); if (!f) return; const t = await readAsText(f); try { if (/\.json$/i.test(f.name)) { const o = JSON.parse(t); if (o.kind !== 'techomato-flowchart') throw new Error('x'); addDiagram({ ...o.diagram, id: uid() }); } else addDiagram(fromMermaid(t, f.name.replace(/\.[^.]+$/, ''))); } catch { toast('Could not read that file'); } };
+  const importFile = async () => { const f = await pickFile('.mmd,.md,.txt,.json,text/plain'); if (!f) return; const t = await readAsText(f); try { if (/\.json$/i.test(f.name)) { const o = JSON.parse(t); if (o.kind !== 'techomato-flowchart' || !o.diagram || !Array.isArray(o.diagram.nodes) || !Array.isArray(o.diagram.edges)) throw new Error('x'); addDiagram({ ...o.diagram, id: uid() }); } else addDiagram(fromMermaid(t, f.name.replace(/\.[^.]+$/, ''))); } catch { toast('Could not read that file'); } };
   const exportAs = async (kind) => { const base = safeName(dg.name); try { if (!dg.nodes.length) { toast('The flowchart is empty'); return; } if (kind === 'png') { const b = await toPng(dg, 2); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = base + '.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); } else if (kind === 'svg') downloadFile(base + '.svg', toSvg(dg), 'image/svg+xml'); else if (kind === 'mmd') downloadFile(base + '.mmd', toMermaid(dg), 'text/plain'); else if (kind === 'json') downloadFile(base + '.json', JSON.stringify({ kind: 'techomato-flowchart', diagram: dg }), 'application/json'); } catch { toast('Export failed'); } };
 
   /* ---- derived render data ---- */

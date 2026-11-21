@@ -12,7 +12,7 @@ const hexRgb = (h) => { const m = /^#?([0-9a-f]{6})$/i.exec(h || '') || ['', '00
 
 /* "1-3, 5, 8-" -> [0,1,2,4,7,...]  (zero-based, in order, no duplicates unless dup) */
 export function parseRanges(text, n) {
-  const out = []; const parts = String(text || '').split(/[,;\s]+/).filter(Boolean);
+  const out = []; const parts = String(text || '').replace(/\s*-\s*/g, '-').split(/[,;\s]+/).filter(Boolean); /* "2 - 4" must stay one range */
   for (const p of parts) {
     const m = /^(\d*)\s*-\s*(\d*)$/.exec(p);
     if (m) { const a = m[1] ? +m[1] : 1; const b = m[2] ? +m[2] : n; if (a < 1 || b < 1 || a > n) return null; const lo = Math.min(a, b), hi = Math.min(n, Math.max(a, b)); if (a <= b) for (let i = lo; i <= hi; i++) out.push(i - 1); else for (let i = Math.min(n, a); i >= b; i--) out.push(i - 1); } else if (/^\d+$/.test(p)) { const v = +p; if (v < 1 || v > n) return null; out.push(v - 1); } else return null;
@@ -34,16 +34,17 @@ export async function openPdf(bytes, name, password) {
 
 export const PAGE_SIZES = { A4: [595.28, 841.89], Letter: [612, 792], Legal: [612, 1008], A3: [841.89, 1190.55], A5: [419.53, 595.28] };
 
-async function imgToPngBytes(file) {
+/* Re-draws through a canvas: the browser applies the photo's rotation flag, which pdf-lib's embedJpg ignores. */
+async function imgToBytes(file, mime) {
   const url = URL.createObjectURL(file);
-  try { const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Cannot read image ' + file.name)); i.src = url; }); const c = document.createElement('canvas'); c.width = im.naturalWidth || 800; c.height = im.naturalHeight || 600; c.getContext('2d').drawImage(im, 0, 0); const blob = await new Promise((r) => c.toBlob(r, 'image/png')); return new Uint8Array(await blob.arrayBuffer()); } finally { URL.revokeObjectURL(url); }
+  try { const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Cannot read image ' + file.name)); i.src = url; }); const c = document.createElement('canvas'); c.width = im.naturalWidth || 800; c.height = im.naturalHeight || 600; c.getContext('2d').drawImage(im, 0, 0); const blob = await new Promise((r) => c.toBlob(r, mime, 0.92)); return new Uint8Array(await blob.arrayBuffer()); } finally { URL.revokeObjectURL(url); }
 }
 /* One image -> single-page PDF bytes. opts: {size:'fit'|'A4'|'Letter', margin} */
 export async function imageToPdf(file, opts = {}) {
   const { PL } = await loadLibs(); const doc = await PL.PDFDocument.create();
-  let bytes = new Uint8Array(await file.arrayBuffer()); let img;
-  if (file.type === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) img = await doc.embedJpg(bytes);
-  else { if (!(file.type === 'image/png' || /\.png$/i.test(file.name))) bytes = await imgToPngBytes(file); img = await doc.embedPng(bytes); }
+  let img;
+  if (file.type === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) img = await doc.embedJpg(await imgToBytes(file, 'image/jpeg'));
+  else img = await doc.embedPng(file.type === 'image/png' || /\.png$/i.test(file.name) ? new Uint8Array(await file.arrayBuffer()) : await imgToBytes(file, 'image/png'));
   const margin = opts.margin || 0; let pw, ph; const iw = img.width, ih = img.height;
   if (!opts.size || opts.size === 'fit') { const k = Math.min(1, 1000 / Math.max(iw, ih)); pw = iw * k + margin * 2; ph = ih * k + margin * 2; } else { const s = PAGE_SIZES[opts.size] || PAGE_SIZES.A4; [pw, ph] = iw > ih ? [s[1], s[0]] : s; }
   const page = doc.addPage([pw, ph]); const k = Math.min((pw - margin * 2) / iw, (ph - margin * 2) / ih); const w = iw * k, h = ih * k;
@@ -111,8 +112,8 @@ export async function buildPdf(files, pages, settings = {}, onProgress) {
     /* collect overlay operations in displayed coordinates */
     const ops = [...(pg.ann || [])];
     const pn = pi + 1; const numTok = (s) => String(s).replace(/\{n\}/g, pn).replace(/\{total\}/g, total).replace(/\{file\}/g, pg.blank ? '' : (files.get(pg.fid).name || '').replace(/\.pdf$/i, ''));
-    const wm = settings.watermark; if (wm && wm.on && wm.text) { if (wm.pages !== 'odd' || pn % 2 === 1) if (wm.pages !== 'even' || pn % 2 === 0) { const th = ((wm.angle || 0) * Math.PI) / 180; ops.push({ type: 'text', text: wm.text, x: dispW / 2 - 0, y: dispH / 2 - 0, size: wm.size || 72, color: wm.color || '#999999', opacity: wm.opacity == null ? 0.25 : wm.opacity, rotate: wm.angle || 0, align: 'center', font: 'Helvetica', bold: true }); void th; } }
-    const nm = settings.numbers; if (nm && nm.on && pn >= (nm.start || 1) && (nm.skipFirst ? pn > 1 : true)) { const txt = numTok(nm.format || 'Page {n} of {total}'); const m = nm.margin == null ? 28 : nm.margin; const al = nm.align || 'center'; const x = al === 'left' ? m : al === 'right' ? dispW - m : dispW / 2; const y = nm.pos === 'top' ? m - (nm.size || 11) : dispH - m - (nm.size || 11) * 0.2; ops.push({ type: 'text', text: txt, x, y: nm.pos === 'top' ? m : dispH - m - (nm.size || 11), size: nm.size || 11, color: nm.color || '#444444', align: al, font: nm.font || 'Helvetica' }); void y; }
+    const wm = settings.watermark; if (wm && wm.on && wm.text) { if (wm.pages !== 'odd' || pn % 2 === 1) if (wm.pages !== 'even' || pn % 2 === 0) { ops.push({ type: 'text', text: wm.text, x: dispW / 2 - 0, y: dispH / 2 - 0, size: wm.size || 72, color: wm.color || '#999999', opacity: wm.opacity == null ? 0.25 : wm.opacity, rotate: wm.angle || 0, align: 'center', font: 'Helvetica', bold: true }); } }
+    const nm = settings.numbers; if (nm && nm.on && pn >= (nm.start || 1) && (nm.skipFirst ? pn > 1 : true)) { const txt = numTok(nm.format || 'Page {n} of {total}'); const m = nm.margin == null ? 28 : nm.margin; const al = nm.align || 'center'; const x = al === 'left' ? m : al === 'right' ? dispW - m : dispW / 2; ops.push({ type: 'text', text: txt, x, y: nm.pos === 'top' ? m : dispH - m - (nm.size || 11), size: nm.size || 11, color: nm.color || '#444444', align: al, font: nm.font || 'Helvetica' }); }
     for (const [key, top] of [['header', true], ['footer', false]]) { const hf = settings[key]; if (!hf || !hf.on) continue; const m = hf.margin == null ? 24 : hf.margin; const size = hf.size || 10; for (const [al, txt] of [['left', hf.left], ['center', hf.center], ['right', hf.right]]) if (txt) ops.push({ type: 'text', text: numTok(txt), x: al === 'left' ? m + 6 : al === 'right' ? dispW - m - 6 : dispW / 2, y: top ? m : dispH - m - size, size, color: hf.color || '#444444', align: al, font: hf.font || 'Helvetica' }); }
     if (ops.length && R !== 0) {
       /* bake rotation into a fresh upright page so overlay coordinates are simple */
@@ -121,7 +122,7 @@ export async function buildPdf(files, pages, settings = {}, onProgress) {
       np.drawPage(emb, { x: tf.x, y: tf.y, rotate: degrees(tf.r), xScale: 1, yScale: 1 });
       out.removePage(idx + 1); page = np; R = 0; await drawOps(ctx, page, ops, { x0: 0, y0: 0, H: dispH });
     } else {
-      if (R !== 0) page.setRotation(degrees(R)); else page.setRotation(degrees(0));
+      page.setRotation(degrees(R));
       if (ops.length) { const mb = page.getMediaBox(); await drawOps(ctx, page, ops, { x0: mb.x, y0: mb.y, H: dispH }); }
     }
     if (crop && (crop.t || crop.r || crop.b || crop.l) && page) { const mb = page.getMediaBox(); const rr = page.getRotation().angle; /* margins are given for the displayed page */ let [t, r, b, l] = [crop.t || 0, crop.r || 0, crop.b || 0, crop.l || 0]; if (rr === 90) [t, r, b, l] = [l, t, r, b]; else if (rr === 180) [t, r, b, l] = [b, l, t, r]; else if (rr === 270) [t, r, b, l] = [r, b, l, t]; const nw = mb.width - l - r, nh = mb.height - t - b; if (nw > 10 && nh > 10) page.setCropBox(mb.x + l, mb.y + b, nw, nh); }

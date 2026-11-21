@@ -21,6 +21,9 @@ export function newScene() {
   const cam = mkObject('camera', { name: 'Camera', pos: [7.4, -6.5, 5.2], rot: [63, 0, 46] });
   return { objs: [floor, cube, light, fill, cam], world: { bg: '#2c3038', ambient: '#8fa2c4', ambI: 0.42, shadows: true, resX: 1280, resY: 720 }, anim: { fps: 24, start: 1, end: 96, keys: {} }, frame: 1, activeCam: cam.id };
 }
+/* a scene that fails this crashes the page, and the autosave would bring it back on every visit */
+const arr3 = (a) => Array.isArray(a) && a.length === 3;
+export const validScene = (s) => !!s && Array.isArray(s.objs) && s.objs.every((o) => o && arr3(o.pos) && arr3(o.rot) && arr3(o.scl)) && !!s.world && !!s.anim && !!s.anim.keys && typeof s.anim.keys === 'object';
 export const objById = (s, id) => s.objs.find((o) => o.id === id);
 export const modelM = (o) => m4.trs(o.pos, o.rot, o.scl);
 export const clone = (x) => JSON.parse(JSON.stringify(x));

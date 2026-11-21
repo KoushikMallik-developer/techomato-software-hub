@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "instrument sans",
+        "createdAt": "2026-11-21T20:15:02.333Z",
+        "reason": "false positive: Instrument Sans is the primary face and is not on the overused list; Roboto appears only as a system fallback in the stack. Decided by assistant from the CSS, not user confirmed."
+      }
+    ]
+  }
+}

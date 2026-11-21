@@ -248,6 +248,8 @@ export class PDoc {
     return { kind: 'techomato-photo', v: 1, w: this.w, h: this.h, active: this.activeId, layers: this.layers.map((L) => ({ id: L.id, name: L.name, type: L.type, visible: L.visible, locked: L.locked, opacity: L.opacity, blend: L.blend, maskOn: L.maskOn, clip: L.clip, adj: L.adj, text: L.text, shape: L.shape, style: L.style, canvas: L.type === 'raster' ? png(L.canvas) : null, mask: L.mask ? png(L.mask) : null })) };
   }
   static async fromJSON(o) {
+    const ok = (n) => Number.isInteger(n) && n >= 1 && n <= 16000;
+    if (!o || !ok(o.w) || !ok(o.h) || !Array.isArray(o.layers) || !o.layers.length) throw new Error('not a Photo project');
     const load = (u) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = u; });
     const d = new PDoc(o.w, o.h, 'transparent'); d.layers = [];
     for (const l of o.layers) {

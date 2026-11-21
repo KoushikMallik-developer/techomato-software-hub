@@ -71,7 +71,7 @@ export const ADJUSTMENTS = {
     make: (p) => (d) => {
       const v = p.vibrance / 100, sa = 1 + p.sat / 100;
       for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i + 1], b = d[i + 2], mx = Math.max(r, g, b), mn = Math.min(r, g, b), sat = mx ? (mx - mn) / mx : 0; const amt = 1 + v * (1 - sat) * (v > 0 ? 1 : 0.5) * (v > 0 ? 1 : 1) ; const avg = (r + g + b) / 3;
+        const r = d[i], g = d[i + 1], b = d[i + 2], mx = Math.max(r, g, b), mn = Math.min(r, g, b), sat = mx ? (mx - mn) / mx : 0; const amt = 1 + v * (1 - sat) * (v > 0 ? 1 : 0.5); const avg = (r + g + b) / 3;
         const k = amt * sa; d[i] = avg + (r - avg) * k; d[i + 1] = avg + (g - avg) * k; d[i + 2] = avg + (b - avg) * k;
       }
     },
