@@ -11,6 +11,8 @@ export async function deriveKey(pw, salt, iter = ITER) {
 }
 export async function seal(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(obj))); return { iv: b64(iv), ct: b64(ct) }; }
 export async function open(key, box) { const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(box.iv) }, key, unb64(box.ct)); return JSON.parse(dec.decode(pt)); }
+/* a restored file must look like an envelope we wrote; the iteration cap stops a hostile file freezing the tab */
+export const validEnv = (e) => !!e && e.kind === 'techomato-vault' && ['salt', 'iv', 'ct'].every((k) => typeof e[k] === 'string') && (e.iter === undefined || (Number.isInteger(e.iter) && e.iter >= 100000 && e.iter <= 5000000));
 /* create a brand-new envelope */
 export async function createEnvelope(pw, payload) { const salt = crypto.getRandomValues(new Uint8Array(16)); const key = await deriveKey(pw, salt, ITER); const box = await seal(key, payload); return { env: { kind: 'techomato-vault', v: 1, kdf: 'PBKDF2-SHA256', iter: ITER, salt: b64(salt), ...box }, key }; }
 export async function unlockEnvelope(pw, env) { const key = await deriveKey(pw, unb64(env.salt), env.iter || ITER); const payload = await open(key, env); return { key, payload }; }

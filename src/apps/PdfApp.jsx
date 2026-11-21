@@ -25,7 +25,7 @@ export default function PdfApp() {
   const [files, setFiles] = useState(() => new Map()); const [pages, setPages] = useState([]); const [sel, setSel] = useState(() => new Set()); const [anchor, setAnchor] = useState(null);
   const [tab, setTab] = useState('Home'); const [dlg, setDlg] = useState(null); const [editor, setEditor] = useState(null); const [busy, setBusy] = useState(null); const [dragOver, setDragOver] = useState(false);
   const [settings, setSettings] = useState({ watermark: { on: false, text: 'CONFIDENTIAL', size: 72, angle: 45, opacity: 0.25, color: '#999999', pages: 'all' }, numbers: { on: false, format: 'Page {n} of {total}', pos: 'bottom', align: 'center', size: 11, start: 1, skipFirst: false, color: '#444444' }, header: { on: false, left: '', center: '', right: '', size: 10 }, footer: { on: false, left: '', center: '', right: '', size: 10 }, crop: { t: 0, r: 0, b: 0, l: 0 }, meta: { title: '', author: '', subject: '', keywords: '' } });
-  const [sigs, setSigs] = useState(() => { try { return JSON.parse(localStorage.getItem('techomato:pdf-sigs') || '[]'); } catch { return []; } });
+  const [sigs, setSigs] = useState(() => { try { const v = JSON.parse(localStorage.getItem('techomato:pdf-sigs') || '[]'); return Array.isArray(v) ? v : []; } catch { return []; } });
   const [zoom, setZoom] = useState(170); const [outSize, setOutSize] = useState(null); const undoStack = useRef([]); const redoStack = useRef([]); const fileInput = useRef(null); const dragFrom = useRef(null); const [dropAt, setDropAt] = useState(null);
   useEffect(() => { try { localStorage.setItem('techomato:pdf-sigs', JSON.stringify(sigs)); } catch { /* ignore */ } }, [sigs]);
   const fileList = [...files.values()];

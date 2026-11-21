@@ -11,7 +11,7 @@ import '../styles/fluent.css';
 /*
   Top bar used by the "everyday" apps (Microsoft 365 style): site link, app logo + name,
   optional centre slot (search), right slot, and a "..." menu with backup / restore.
-    <AppBar id="todo" name="Techomato To Do" backup={{ name:'todo', get, set }}>
+    <AppBar id="money" name="Techomato Money" backup={{ name:'money', get, set }}>
 */
 export default function AppBar({ id, name, center, right, backup, extraMenu = [], status }) {
   const dlg = useDialog();

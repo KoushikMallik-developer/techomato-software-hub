@@ -5,7 +5,6 @@ export function PlatformBadges({ platforms }) {
   return (
     <span className="badges">
       {platforms.includes('browser') && <span className="badge badge-browser">Browser</span>}
-      {platforms.includes('windows') && <span className="badge badge-windows">Windows</span>}
     </span>
   );
 }

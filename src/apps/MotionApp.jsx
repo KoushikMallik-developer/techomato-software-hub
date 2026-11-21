@@ -5,7 +5,7 @@ import { Modal, useToast, useAsk, useContextMenu } from '../components/fxui.jsx'
 import { StudioMenu, Num, Row, PanelBox, ColorField, useHotkeys, useRaf, useHistory } from '../components/studio.jsx';
 import { idbGet, idbSet } from '../lib/idb.js';
 import { pickFiles, pickFile, readAsText, readAsDataURL, safeName, downloadFile } from '../lib/download.js';
-import { renderComp, mkLayer, mkEffect, EFFECTS, BLENDS, FONTS, PRESETS, EASE_PRESETS, ease, easeName, applyPreset, sampleComp, compDefaults, defaultShape, measureText, values, worldM, quadOf, hitLayer, parentLinear, inv, apply, getProp, setPropAt, toggleKey, hasKeys, propsOf, exprError, makeZip, fmtTC, clamp, uid, P0 } from './motion/engine.js';
+import { renderComp, mkLayer, mkEffect, EFFECTS, BLENDS, FONTS, PRESETS, EASE_PRESETS, ease, easeName, applyPreset, sampleComp, compDefaults, defaultShape, measureText, values, worldM, quadOf, hitLayer, parentLinear, inv, apply, getProp, setPropAt, toggleKey, hasKeys, propsOf, exprError, validComp, makeZip, fmtTC, clamp, uid, P0 } from './motion/engine.js';
 import '../styles/motion.css';
 
 const HEAD = 330, RULER = 26, ROW_L = 30, ROW_P = 25;
@@ -81,10 +81,13 @@ export default function MotionApp() {
 
   /* ---------- project io ---------- */
   const projectJSON = () => JSON.stringify({ kind: 'techomato-motion', comp, images: [...imgData.current.entries()].map(([id, v]) => ({ id, ...v })) });
-  const openProject = async () => { const f = await pickFile('.json,application/json'); if (!f) return; try { const d = JSON.parse(await readAsText(f)); if (d.kind !== 'techomato-motion') throw new Error('not a Motion Studio project'); await restore(d); toast('Project opened'); } catch (e) { toast('Could not open: ' + e.message); } };
+  const openProject = async () => { const f = await pickFile('.json,application/json'); if (!f) return; try { const text = await readAsText(f); const d = JSON.parse(text); if (d.kind !== 'techomato-motion' || !validComp(d.comp)) throw new Error('not a Motion Studio project');
+    /* expressions run as code with full access to this site's data, so ask before opening a file that has any */
+    if (/"ex"\s*:\s*"[^"]/.test(text) && !(await ask({ title: 'This project contains code', message: 'Its expressions run as code on this page. Only open it if you trust where it came from.', okText: 'Open anyway', danger: true }))) return;
+    await restore(d); toast('Project opened'); } catch (e) { toast('Could not open: ' + e.message); } };
   const restore = async (d) => { pause(); imgs.current.clear(); imgData.current.clear(); arguments_restoring.current = true; for (const im of d.images || []) await loadImage(im.data, im.name, im.id); arguments_restoring.current = false; h.reset(d.comp); setSelId(null); setSelKeys([]); seek(0); };
   const restored = useRef(false); const saveT = useRef(0);
-  useEffect(() => { (async () => { try { const r = await idbGet('motion-project'); if (r && r.comp && r.comp.layers && r.comp.layers.length) { await restore(r); toast('Restored your last composition'); } } catch { /* ignore */ } restored.current = true; })(); }, []); // eslint-disable-line
+  useEffect(() => { (async () => { try { const r = await idbGet('motion-project'); if (r && validComp(r.comp) && r.comp.layers.length) { await restore(r); toast('Restored your last composition'); } } catch { /* ignore */ } restored.current = true; })(); }, []); // eslint-disable-line
   useEffect(() => { if (!restored.current) return undefined; clearTimeout(saveT.current); setSave('Unsaved changes'); saveT.current = setTimeout(async () => { const ok = await idbSet('motion-project', { kind: 'techomato-motion', comp, images: [...imgData.current.entries()].map(([id, v]) => ({ id, ...v })) }); setSave(ok ? 'Autosaved' : 'Autosave unavailable'); }, 2000); return () => clearTimeout(saveT.current); }, [comp]);
 
   /* ---------- export ---------- */
@@ -363,7 +366,7 @@ function ExportDialog({ comp, mimes, onClose, onOk, onSeq }) {
       <Row label="Size"><select className="stu-sel" aria-label="Output size" value={scale} onChange={(e) => setScale(+e.target.value)}>{[1, 0.75, 0.5, 0.25].map((s) => <option key={s} value={s}>{Math.round((comp.w * s) / 2) * 2} × {Math.round((comp.h * s) / 2) * 2} ({s * 100}%)</option>)}</select></Row>
       <Row label="Frame rate"><select className="stu-sel" aria-label="Export frame rate" value={fps} onChange={(e) => setFps(+e.target.value)}>{[24, 25, 30, 60].map((f) => <option key={f} value={f}>{f} fps</option>)}</select></Row>
       <Num label="Bitrate" value={mbps} min={1} max={40} step={0.5} unit="Mbps" onChange={setMbps} />
-      <p className="stu-hint">The browser records the composition in real time, so a 6-second animation takes about 6 seconds. For frame-exact output use “PNG sequence”.</p>
+      <p className="stu-hint">The browser records the composition in real time, so a 6-second animation takes about 6 seconds. Keep this tab open and visible until it finishes. For frame-exact output use “PNG sequence”.</p>
     </div></Modal>;
 }
 function SeqDialog({ comp, onClose, onOk }) {

@@ -71,6 +71,8 @@ export function encodeWav(b, bits = 16) {
 }
 
 /* ---------- scheduling ---------- */
+/* every track needs a clips list and every clip real numbers, or scheduling throws and the autosave would bring the crash back every visit */
+export const validProject = (p) => !!p && Array.isArray(p.tracks) && p.tracks.length > 0 && p.tracks.every((t) => t && t.fx && typeof t.fx === 'object' && Number.isFinite(t.vol) && Number.isFinite(t.pan) && Array.isArray(t.clips) && t.clips.every((c) => c && Number.isFinite(c.start) && Number.isFinite(c.dur)));
 export const projectEnd = (p) => p.tracks.reduce((m, t) => t.clips.reduce((mm, c) => Math.max(mm, c.start + c.dur), m), 0);
 const anySolo = (p) => p.tracks.some((t) => t.solo);
 /* Build the whole graph in `ctx`. Returns { master, tracks:{id:{gain,pan,analyser}}, stop() } */

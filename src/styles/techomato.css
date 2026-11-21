@@ -58,8 +58,8 @@ html .fx {
     --panel: #0F1013;
   }
 }
-html .fx:not(.frm-solo) { --brand: #C8381F !important; --brand-h: #A82E19 !important; --brand-soft: #FBE6E0 !important; --brand-ink: #FFFFFF !important; }
-@media (prefers-color-scheme: dark) { html .fx:not(.frm-solo) { --brand: #D9482E !important; --brand-h: #E85D44 !important; --brand-soft: #3A1E18 !important; } }
+html .fx { --brand: #C8381F !important; --brand-h: #A82E19 !important; --brand-soft: #FBE6E0 !important; --brand-ink: #FFFFFF !important; }
+@media (prefers-color-scheme: dark) { html .fx { --brand: #D9482E !important; --brand-h: #E85D44 !important; --brand-soft: #3A1E18 !important; } }
 html .fx h1, html .fx h2, html .fx h3, html .fx .fx-bar-name b, html .fx .fx-modal h2 { font-family: 'Bricolage Grotesque', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif; letter-spacing: -.02em; }
 html .fx .fx-bar { background: var(--panel); color: #F5F2EC; border-bottom: 1px solid #2A2C33; height: 54px; }
 .fx-brand { display: inline-flex; align-items: center; gap: 8px; color: #F5F2EC; text-decoration: none; font-family: 'Bricolage Grotesque', 'Instrument Sans', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: -.02em; padding: 4px 8px 4px 6px; border-radius: 999px; }
@@ -101,9 +101,9 @@ html .fx .fx-empty h3 { font-family: 'Bricolage Grotesque', 'Instrument Sans', s
 html .fx .fcheck.on { background: var(--brand); border-color: var(--brand); }
 html .fx ::-webkit-scrollbar-thumb { background: var(--line2); }
 
-/* ---------- Docs / Sheets / Slides frame ---------- */
-.appframe[data-app], .appframe[data-app="docs"], .appframe[data-app="sheets"], .appframe[data-app="slides"] { --brand: #C8381F; --brand-ink: #fff; --focus: #C8381F; }
-@media (prefers-color-scheme: dark) { .appframe[data-app], .appframe[data-app="docs"], .appframe[data-app="sheets"], .appframe[data-app="slides"] { --brand: #D9482E; --brand-ink: #fff; --focus: #E85D44; } }
+/* ---------- App frame ---------- */
+.appframe[data-app] { --brand: #C8381F; --brand-ink: #fff; --focus: #C8381F; }
+@media (prefers-color-scheme: dark) { .appframe[data-app] { --brand: #D9482E; --brand-ink: #fff; --focus: #E85D44; } }
 .apptop { background: var(--panel); color: #F5F2EC; --ink: #F5F2EC; --ink-soft: #C9CBD2; --line: #3A3D46; --surface-2: rgba(255, 255, 255, .12); --surface: #17181C; --bg: #22242A; }
 .apptop .back { display: inline-flex; align-items: center; gap: 8px; color: #F5F2EC; font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; letter-spacing: -.02em; border-radius: 999px; padding: 4px 10px 4px 6px; }
 .apptop .back:hover { background: rgba(255, 255, 255, .12); color: #fff; }

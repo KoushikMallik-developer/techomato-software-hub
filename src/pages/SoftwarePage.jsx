@@ -12,7 +12,6 @@ export default function SoftwarePage() {
 
   const available = item.status === 'available';
   const canLaunch = available && item.launch && item.platforms.includes('browser');
-  const canDownload = available && item.download && item.download.url;
 
   return (
     <div className="wrap detail">
@@ -42,14 +41,7 @@ export default function SoftwarePage() {
             Open {item.name.replace('Techomato ', '')}
           </a>
         )}
-        {canDownload && (
-          <a className="btn lg" href={item.download.url} download>
-            Download for Windows
-            {item.download.version ? ` (v${item.download.version}` : ''}
-            {item.download.size ? `, ${item.download.size})` : item.download.version ? ')' : ''}
-          </a>
-        )}
-        {!canLaunch && !canDownload && !item.url && (
+        {!canLaunch && !item.url && (
           <button className="btn lg" disabled>
             Coming soon
           </button>

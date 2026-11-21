@@ -22,70 +22,6 @@ export function Btn({ icon, children, title, active, disabled, onClick, classNam
   );
 }
 
-export const Sep = () => <span className="sep" role="separator" />;
-
-/* ---------- Native select styled for toolbars ---------- */
-export function Sel({ value, onChange, options, title, width, placeholder, className = '' }) {
-  return (
-    <select
-      className={'tbselect ' + className}
-      title={title}
-      aria-label={title}
-      value={value ?? ''}
-      style={width ? { width } : undefined}
-      onChange={(e) => onChange(e.target.value)}
-    >
-      {placeholder !== undefined && (
-        <option value="" disabled hidden>{placeholder}</option>
-      )}
-      {options.map((o) => {
-        const v = typeof o === 'object' ? o.value : o;
-        const l = typeof o === 'object' ? o.label : o;
-        return <option key={String(v)} value={v}>{l}</option>;
-      })}
-    </select>
-  );
-}
-
-/* ---------- Number stepper (font size etc.) ---------- */
-export function Stepper({ value, onChange, min = 1, max = 400, step = 1, title, width = 44 }) {
-  const [draft, setDraftState] = useState(null);
-  const draftRef = useRef(null);
-  const setDraft = (v) => { draftRef.current = v; setDraftState(v); };
-  const commit = () => {
-    const d = draftRef.current;
-    if (d !== null) {
-      setDraft(null);
-      const n = parseFloat(d);
-      if (!Number.isNaN(n)) onChange(Math.min(max, Math.max(min, n)));
-    }
-  };
-  return (
-    <span className="stepper" title={title}>
-      <button type="button" className="tb mini" aria-label={'Decrease ' + (title || '')} onMouseDown={(e) => e.preventDefault()}
-        onClick={() => onChange(Math.max(min, Math.round(((Number(value) || min) - step) * 100) / 100))}>
-        <Icon name="minus" size={12} />
-      </button>
-      <input
-        aria-label={title}
-        style={{ width }}
-        value={draft !== null ? draft : value ?? ''}
-        onFocus={(e) => e.target.select()}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') { e.preventDefault(); commit(); e.target.blur(); }
-          if (e.key === 'Escape') { setDraft(null); e.target.blur(); }
-        }}
-      />
-      <button type="button" className="tb mini" aria-label={'Increase ' + (title || '')} onMouseDown={(e) => e.preventDefault()}
-        onClick={() => onChange(Math.min(max, Math.round(((Number(value) || min) + step) * 100) / 100))}>
-        <Icon name="plus" size={12} />
-      </button>
-    </span>
-  );
-}
-
 /* ---------- Popover / dropdown ---------- */
 export function useDismiss(open, setOpen, ref) {
   useEffect(() => {
@@ -167,34 +103,6 @@ export function Drop({ icon, label, title, active, disabled, children, align = '
   );
 }
 
-/* A list of menu rows inside a Drop panel */
-export function MenuList({ items, close }) {
-  return (
-    <div className="mlist">
-      {items.map((it, i) =>
-        it.sep ? (
-          <div key={i} className="msep" />
-        ) : it.hidden ? null : (
-          <button
-            key={i}
-            type="button"
-            className={'mrow' + (it.danger ? ' danger' : '')}
-            disabled={it.disabled}
-            onClick={() => {
-              if (close && !it.keepOpen) close();
-              it.onClick && it.onClick();
-            }}
-          >
-            <span className="mcheck">{it.checked ? <Icon name="check" size={13} /> : it.icon ? <Icon name={it.icon} size={14} /> : null}</span>
-            <span className="mlabel">{it.label}</span>
-            {it.shortcut && <span className="mkey">{it.shortcut}</span>}
-          </button>
-        )
-      )}
-    </div>
-  );
-}
-
 /* ---------- Colours ---------- */
 const mix = (hex, to, t) => {
   const n = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -259,33 +167,4 @@ export function ColorPanel({ onPick, noneLabel, close, current }) {
       </div>
     </div>
   );
-}
-
-/* Split colour button: left half applies the last colour, right half opens the palette */
-export function ColorBtn({ icon, title, value, onPick, noneLabel, defaultColor = '#000000' }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-  useDismiss(open, setOpen, ref);
-  const shown = value || defaultColor;
-  return (
-    <span className="drop colorbtn2" ref={ref}>
-      <button type="button" className="tb split-l" title={title} aria-label={title} onMouseDown={(e) => e.preventDefault()} onClick={() => onPick(shown)}>
-        <Icon name={icon} size={16} />
-        <span className="cbar" style={{ background: shown }} />
-      </button>
-      <button type="button" className="tb split-r" title={title + ' options'} aria-label={title + ' options'} aria-expanded={open} onMouseDown={(e) => e.preventDefault()} onClick={() => setOpen((o) => !o)}>
-        <Icon name="chevronDown" size={11} />
-      </button>
-      {open && (
-        <div className="panel" onMouseDown={(e) => { if (e.target.tagName !== 'INPUT') e.preventDefault(); }}>
-          <ColorPanel onPick={onPick} noneLabel={noneLabel} current={value} close={() => setOpen(false)} />
-        </div>
-      )}
-    </span>
-  );
-}
-
-/* Small helper: confirm-on-second-click button label etc. can be added later */
-export function Kbd({ children }) {
-  return <kbd className="kbd">{children}</kbd>;
 }

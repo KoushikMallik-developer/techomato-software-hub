@@ -4,12 +4,16 @@ import Icon from '../components/Icon.jsx';
 import { Pop, MenuRows, Modal, useToast, useAsk, Swatches } from '../components/fxui.jsx';
 import { useStore } from '../lib/useStore.js';
 import { downloadFile, pickFile, readAsText, safeName } from '../lib/download.js';
-import { uid, BRANCH, THEMES, LAYOUTS, blankMap, kids, root, subtreeIds, depthOf, layout, nodeFill, nodeInk, toSvg, toPng, toOutline, toOpml, fromOutline, fromOpml } from './mindmap/model.js';
+import { usableNodes, uid, BRANCH, THEMES, LAYOUTS, blankMap, kids, root, subtreeIds, depthOf, layout, nodeFill, nodeInk, toSvg, toPng, toOutline, toOpml, fromOutline, fromOpml } from './mindmap/model.js';
 import '../styles/mindmap.css';
 
 const sample = () => { const m = fromOutline('Project plan\n- Research\n  - Users\n  - Competitors\n  - Market size\n- Design\n  - Wireframes\n  - Visual style\n- Build\n  - Frontend\n  - Backend\n- Launch\n  - Marketing\n  - Support', 'Project plan'); return m; };
 const blank = () => { const m = sample(); return { maps: [m], cur: m.id }; };
-const migrate = (d) => (d && Array.isArray(d.maps) && d.maps.length ? { cur: d.maps[0].id, ...d } : blank());
+/* keep only usable maps: a damaged item would crash the page on every load */
+const migrate = (d) => {
+  const list = d && Array.isArray(d.maps) ? d.maps.filter((m) => m && usableNodes(m.nodes)) : [];
+  return list.length ? { ...d, maps: list, cur: list.some((m) => m.id === d.cur) ? d.cur : list[0].id } : blank();
+};
 const COLORS = ['', ...BRANCH, '#2b3441'];
 
 export default function MindApp() {
@@ -85,7 +89,7 @@ export default function MindApp() {
   const renameMap = async () => { const n = await ask({ kind: 'prompt', title: 'Rename map', value: map.name, okText: 'Rename' }); if (n && n.trim()) upMap({ name: n.trim() }); };
   const delMap = async () => { if (!(await ask({ kind: 'confirm', title: 'Delete map', message: `Delete "${map.name}"?`, okText: 'Delete', danger: true }))) return; setData((d) => { const rest = d.maps.filter((m) => m.id !== map.id); if (!rest.length) { const m = blankMap(); return { ...d, maps: [m], cur: m.id }; } return { ...d, maps: rest, cur: rest[0].id }; }); };
   const addMap = (m) => { if (!m) { toast('Could not read any topics from that file'); return; } setData((d) => ({ ...d, maps: [...d.maps, m], cur: m.id })); toast(`Imported "${m.name}" (${m.nodes.length} topics)`); };
-  const importFile = async () => { const f = await pickFile('.txt,.md,.opml,.xml,.json,text/plain'); if (!f) return; const t = await readAsText(f); const name = f.name.replace(/\.[^.]+$/, ''); try { if (/\.json$/i.test(f.name)) { const o = JSON.parse(t); if (o.kind === 'techomato-mindmap') addMap({ ...o.map, id: uid() }); else throw new Error('x'); } else if (/\.(opml|xml)$/i.test(f.name) || /^\s*<\?xml|^\s*<opml/i.test(t)) addMap(fromOpml(t, name)); else addMap(fromOutline(t, name)); } catch { toast('Could not read that file'); } };
+  const importFile = async () => { const f = await pickFile('.txt,.md,.opml,.xml,.json,text/plain'); if (!f) return; const t = await readAsText(f); const name = f.name.replace(/\.[^.]+$/, ''); try { if (/\.json$/i.test(f.name)) { const o = JSON.parse(t); if (o.kind === 'techomato-mindmap' && o.map && usableNodes(o.map.nodes)) addMap({ ...o.map, id: uid() }); else throw new Error('x'); } else if (/\.(opml|xml)$/i.test(f.name) || /^\s*<\?xml|^\s*<opml/i.test(t)) addMap(fromOpml(t, name)); else addMap(fromOutline(t, name)); } catch { toast('Could not read that file'); } };
   const exportAs = async (kind) => { const base = safeName(map.name); try { if (kind === 'png') { const b = await toPng(map, 2); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = base + '.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); } else if (kind === 'svg') downloadFile(base + '.svg', toSvg(map), 'image/svg+xml'); else if (kind === 'md') downloadFile(base + '.md', toOutline(map), 'text/markdown'); else if (kind === 'opml') downloadFile(base + '.opml', toOpml(map), 'text/x-opml'); else if (kind === 'json') downloadFile(base + '.json', JSON.stringify({ kind: 'techomato-mindmap', map }), 'application/json'); } catch { toast('Export failed'); } };
 
   const matches = useMemo(() => { const s = q.trim().toLowerCase(); return s ? new Set(nodes.filter((n) => (n.t + ' ' + (n.note || '')).toLowerCase().includes(s)).map((n) => n.id)) : null; }, [q, nodes]);

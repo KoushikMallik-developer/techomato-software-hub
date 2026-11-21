@@ -4,7 +4,7 @@ import { TomatoMark } from './Brand.jsx';
 import { software } from '../data/software.js';
 
 export default function Layout() {
-  const count = software.filter((s) => s.status === 'available').length;
+  const count = software.filter((s) => s.status === 'available' && !s.url).length;
   return (
     <div className="site">
       <header className="site-header no-print">
@@ -15,8 +15,6 @@ export default function Layout() {
           </Link>
           <nav className="nav" aria-label="Main">
             <NavLink to="/" end>All apps</NavLink>
-            <Link to="/?platform=browser">Browser apps</Link>
-            <Link to="/?platform=windows">Windows downloads</Link>
           </nav>
         </div>
       </header>

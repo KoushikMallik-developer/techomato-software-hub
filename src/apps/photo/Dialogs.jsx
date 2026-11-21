@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Modal } from '../../components/fxui.jsx';
 import { Num, Row, ColorField } from '../../components/studio.jsx';
 import { ADJUSTMENTS, adjDefaults } from './adjust.js';
-import { FILTERS, filterDefaults } from './filters.js';
+import { FILTERS, PX, filterDefaults } from './filters.js';
 import { ControlsForm, StyleForm } from './Panels.jsx';
 import { mk, ctxOf, cloneCanvas, defaultStyle } from './doc.js';
 
@@ -78,7 +78,7 @@ export function EffectDialog({ doc, kind, isFilter, onClose, onApply }) {
       // run at preview scale; radii scale with the image
       const small = mk(w, h); ctxOf(small).drawImage(src, 0, 0, w, h); const sg = ctxOf(small); const img = sg.getImageData(0, 0, w, h);
       try {
-        if (isFilter) { const p = { ...params }; for (const cc of spec.controls) if (/radius|size|amount|dist|distance|blur|pixel|cell|scale/i.test(cc.key) && !/percent|%/.test(cc.label)) { /* leave */ } const o = spec.run({ data: img.data, width: w, height: h }, p); g.putImageData(new ImageData(new Uint8ClampedArray(o), w, h), 0, 0); }
+        if (isFilter) { const p = { ...params }; for (const key of PX[kind] || []) p[key] = Math.max(spec.controls.find((c) => c.key === key).min, p[key] * base.k); const o = spec.run({ data: img.data, width: w, height: h }, p); g.putImageData(new ImageData(new Uint8ClampedArray(o), w, h), 0, 0); }
         else { spec.make(params)(img.data); g.putImageData(img, 0, 0); }
       } catch { g.drawImage(src, 0, 0, w, h); }
     }, 60); return () => clearTimeout(tm.current);

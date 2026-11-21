@@ -131,7 +131,7 @@ export default function VideoApp() {
     const t = pos.current; if (phRef.current) phRef.current.style.transform = `translateX(${t * L.current.pps}px)`; const s = fmtTC(t, Pn.fps); if (tcRef.current && tcRef.current.textContent !== s) tcRef.current.textContent = s; if (tc2Ref.current) tc2Ref.current.textContent = fmtTC(projectDuration(Pn), Pn.fps);
     if (e.playing && scroll.current) { const sc = scroll.current; const x = t * L.current.pps + HEAD_W; if (x > sc.scrollLeft + sc.clientWidth - 30 || x < sc.scrollLeft + HEAD_W) sc.scrollLeft = Math.max(0, x - sc.clientWidth * 0.3); }
   }, true);
-  useEffect(() => { const e = E.current; return () => { e.playing = false; for (const el of e.els.values()) { el.pause(); el.removeAttribute('src'); } try { e.actx && e.actx.close(); } catch { /* ignore */ } for (const m of media.current.values()) URL.revokeObjectURL(m.url); }; }, []);
+  useEffect(() => { const e = E.current; return () => { e.playing = false; clearInterval(e.expTimer); try { if (e.exporting) e.exporting.mr.stop(); } catch { /* ignore */ } for (const el of e.els.values()) { el.pause(); el.removeAttribute('src'); } try { e.actx && e.actx.close(); } catch { /* ignore */ } for (const m of media.current.values()) URL.revokeObjectURL(m.url); }; }, []);
   useEffect(() => { for (const id of [...E.current.els.keys()]) if (!P.clips.some((c) => c.id === id)) { const el = E.current.els.get(id); el.pause(); E.current.els.delete(id); } if (!E.current.playing) syncMedia(pos.current, false); }, [P.clips]); // eslint-disable-line
 
   /* ---------- export ---------- */
@@ -341,7 +341,7 @@ function ExportDialog({ P, mimes, onClose, onOk }) {
       <Row label="Frame rate"><select className="stu-sel" aria-label="Export frame rate" value={fps} onChange={(e) => setFps(+e.target.value)}>{[24, 25, 30, 60].map((f) => <option key={f} value={f}>{f} fps</option>)}</select></Row>
       <Num label="Bitrate" value={mbps} min={1} max={40} step={0.5} unit="Mbps" onChange={setMbps} />
       <Row label="Range"><select className="stu-sel" aria-label="Range" value={scope} onChange={(e) => setScope(e.target.value)}><option value="all">Whole timeline</option><option value="range" disabled={!P.range}>In to out points</option></select></Row>
-      <p className="stu-hint">Exports play the timeline in real time while the browser records it, so a 1-minute video takes about a minute.</p>
+      <p className="stu-hint">Exports play the timeline in real time while the browser records it, so a 1-minute video takes about a minute. Keep this tab open and visible until it finishes.</p>
     </div>
   </Modal>;
 }

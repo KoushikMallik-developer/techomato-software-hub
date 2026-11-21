@@ -4,7 +4,7 @@ import Icon from '../components/Icon.jsx';
 import { Pop, MenuRows, Modal, useToast, useAsk } from '../components/fxui.jsx';
 import { useStore, uid } from '../lib/useStore.js';
 import { downloadFile, pickFile, readAsText, safeName } from '../lib/download.js';
-import { createEnvelope, unlockEnvelope, resealEnvelope, deriveKey, ITER, totp, parseOtpAuth, genPassword, genPassphrase, genBits, strength, WORD_COUNT } from './vault/crypto.js';
+import { validEnv, createEnvelope, unlockEnvelope, resealEnvelope, deriveKey, ITER, totp, parseOtpAuth, genPassword, genPassphrase, genBits, strength, WORD_COUNT } from './vault/crypto.js';
 import '../styles/vault.css';
 
 const TYPES = [['login', 'Login'], ['note', 'Secure note'], ['card', 'Payment card']];
@@ -25,7 +25,7 @@ function importCsv(text) {
 }
 
 export default function VaultApp() {
-  const [stored, setStored, meta] = useStore('vault', () => ({ env: null }), (d) => ({ env: d && d.env && d.env.kind === 'techomato-vault' ? d.env : null }));
+  const [stored, setStored, meta] = useStore('vault', () => ({ env: null }), (d) => ({ env: d && validEnv(d.env) ? d.env : null }));
   const [toastNode, toast] = useToast(); const [askNode, ask] = useAsk();
   const env = stored.env;
   const [key, setKey] = useState(null); const [payload, setPayload] = useState(null); const keySalt = useRef(null); const dirty = useRef(false); const envRef = useRef(env); envRef.current = env;
@@ -55,7 +55,6 @@ export default function VaultApp() {
     return () => { clearTimeout(t); ev.forEach((e) => window.removeEventListener(e, arm, true)); document.removeEventListener('visibilitychange', vis); };
     // eslint-disable-next-line
   }, [unlocked, set.autoLock, set.lockHidden]);
-  useEffect(() => { const h = () => { if (unlocked && dirty.current) { /* best effort: nothing sync possible with WebCrypto */ } }; window.addEventListener('pagehide', h); return () => window.removeEventListener('pagehide', h); }, [unlocked]);
 
   /* -------- setup / unlock -------- */
   const create = async () => {
@@ -89,14 +88,14 @@ export default function VaultApp() {
   const exportEnc = async () => { await flushNow(); downloadFile(`techomato-vault-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(envRef.current), 'application/json'); toast('Encrypted backup downloaded'); };
   const exportCsv = async () => { if (!(await ask({ kind: 'confirm', title: 'Export unencrypted CSV', message: 'The CSV file will contain all your passwords in plain text. Anyone who can open it can read them. Delete it as soon as you are done.', okText: 'Export CSV', danger: true }))) return; const rows = [['name', 'url', 'username', 'password', 'note', 'totp', 'type']].concat(items.map((i) => [i.title, i.url, i.user, i.pw, i.note, i.totp, i.type])); downloadFile('techomato-vault-export.csv', rows.map((r) => r.map(csvEsc).join(',')).join('\n'), 'text/csv'); };
   const doImport = async () => { const f = await pickFile('.csv,text/csv'); if (!f) return; const list = importCsv(await readAsText(f)); if (!list.length) { toast('No logins found in that file'); return; } mut((p) => ({ ...p, items: [...p.items, ...list] })); toast(`Imported ${list.length} item${list.length > 1 ? 's' : ''}`); };
-  const restoreEnc = async () => { const f = await pickFile('.json'); if (!f) return; try { const o = JSON.parse(await readAsText(f)); if (o.kind !== 'techomato-vault') throw new Error('x'); if (!(await ask({ kind: 'confirm', title: 'Restore vault backup', message: 'This replaces the vault stored in this browser with the backup. You will need the master password that was used for the backup.', okText: 'Restore', danger: true }))) return; setStored(() => ({ env: o })); lock(); toast('Backup restored. Unlock it with its master password.'); } catch { toast('That is not a Techomato vault backup'); } };
+  const restoreEnc = async () => { const f = await pickFile('.json'); if (!f) return; try { const o = JSON.parse(await readAsText(f)); if (!validEnv(o)) throw new Error('x'); if (!(await ask({ kind: 'confirm', title: 'Restore vault backup', message: 'This replaces the vault stored in this browser with the backup. You will need the master password that was used for the backup.', okText: 'Restore', danger: true }))) return; setStored(() => ({ env: o })); lock(); toast('Backup restored. Unlock it with its master password.'); } catch { toast('That is not a Techomato vault backup'); } };
 
   const lockedScreen = !unlocked;
   return (
     <div className="fx vl" style={{ '--brand': '#3a42a8', '--brand-h': '#2c3385', '--brand-soft': '#e8eafa' }} data-app="vault">
       <AppBar id="vault" name="Techomato Vault" status={meta.status === 'error' ? 'error' : undefined}
         right={unlocked && <button className="fx-bar-btn vl-lock" onClick={async () => { await flushNow().catch(() => {}); lock(); }} aria-label="Lock vault"><Icon name="rectSel" size={16} /> Lock</button>}
-        backup={{ name: 'vault', get: () => ({ env }), set: (d) => { const e = d && d.env && d.env.kind === 'techomato-vault' ? d.env : d && d.kind === 'techomato-vault' ? d : null; meta.replace({ env: e }); }, blank: () => ({ env: null }) }}
+        backup={{ name: 'vault', get: () => ({ env }), set: (d) => { const e = d && validEnv(d.env) ? d.env : validEnv(d) ? d : null; meta.replace({ env: e }); }, blank: () => ({ env: null }) }}
         extraMenu={[{ label: 'Restore encrypted backup…', onClick: restoreEnc }]} />
       {lockedScreen && (
         <div className="vl-gate">

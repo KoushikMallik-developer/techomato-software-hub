@@ -59,7 +59,7 @@ function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), fx = x 
 export const FILTERS = {
   gaussian: { label: 'Gaussian Blur', group: 'Blur', controls: [S('radius', 'Radius', 0.5, 100, 0.5, 5)], run: (img, p) => gaussian(img, p.radius) },
   motion: {
-    label: 'Motion Blur', group: 'Blur', controls: [S('angle', 'Angle', -90, 90, 1, 0), S('distance', 'Distance', 1, 200, 1, 20)],
+    label: 'Motion Blur', group: 'Blur', slow: true, controls: [S('angle', 'Angle', -90, 90, 1, 0), S('distance', 'Distance', 1, 200, 1, 20)],
     run: (img, p) => {
       const { data, width: w, height: h } = img; const o = new Uint8ClampedArray(data.length); const a = (p.angle * Math.PI) / 180, dx = Math.cos(a), dy = -Math.sin(a); const n = Math.max(2, Math.min(60, Math.round(p.distance))); const t = [0, 0, 0, 0];
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let r = 0, g = 0, b = 0, al = 0; for (let k = 0; k < n; k++) { const s = (k / (n - 1) - 0.5) * p.distance; sample(data, w, h, x + dx * s, y + dy * s, t); const aa = t[3] / 255; r += t[0] * aa; g += t[1] * aa; b += t[2] * aa; al += t[3]; } const i = (y * w + x) * 4; al /= n; if (al > 0.5) { const k = 255 / al; o[i] = r / n * k * 1; o[i + 1] = g / n * k; o[i + 2] = b / n * k; } o[i + 3] = al; }
@@ -67,7 +67,7 @@ export const FILTERS = {
     },
   },
   zoomBlur: {
-    label: 'Radial (Zoom) Blur', group: 'Blur', controls: [S('amount', 'Amount', 1, 100, 1, 20), S('cx', 'Centre X %', 0, 100, 1, 50), S('cy', 'Centre Y %', 0, 100, 1, 50)],
+    label: 'Radial (Zoom) Blur', group: 'Blur', slow: true, controls: [S('amount', 'Amount', 1, 100, 1, 20), S('cx', 'Centre X %', 0, 100, 1, 50), S('cy', 'Centre Y %', 0, 100, 1, 50)],
     run: (img, p) => {
       const { data, width: w, height: h } = img; const o = new Uint8ClampedArray(data.length); const cx = (p.cx / 100) * w, cy = (p.cy / 100) * h; const n = 14; const t = [0, 0, 0, 0];
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let r = 0, g = 0, b = 0, al = 0; for (let k = 0; k < n; k++) { const s = 1 - (k / n) * (p.amount / 100) * 0.5; sample(data, w, h, cx + (x - cx) * s, cy + (y - cy) * s, t); r += t[0]; g += t[1]; b += t[2]; al += t[3]; } const i = (y * w + x) * 4; o[i] = r / n; o[i + 1] = g / n; o[i + 2] = b / n; o[i + 3] = al / n; }
@@ -84,7 +84,7 @@ export const FILTERS = {
     run: (img, p) => { seed = 7; const d = img.data, o = new Uint8ClampedArray(d), k = p.amount * 2.55 * (p.gaussian ? 0.45 : 1); for (let i = 0; i < d.length; i += 4) { const nr = p.gaussian ? gauss() : rnd() * 2 - 1; const ng = p.mono ? nr : (p.gaussian ? gauss() : rnd() * 2 - 1), nb = p.mono ? nr : (p.gaussian ? gauss() : rnd() * 2 - 1); o[i] = d[i] + nr * k; o[i + 1] = d[i + 1] + ng * k; o[i + 2] = d[i + 2] + nb * k; } return o; },
   },
   median: {
-    label: 'Median (reduce noise)', group: 'Noise', controls: [S('radius', 'Radius', 1, 2, 1, 1)],
+    label: 'Median (reduce noise)', group: 'Noise', slow: true, controls: [S('radius', 'Radius', 1, 2, 1, 1)],
     run: (img, p) => {
       const { data, width: w, height: h } = img; const o = new Uint8ClampedArray(data.length); const r = p.radius; const buf = [[], [], []];
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { buf[0].length = buf[1].length = buf[2].length = 0; for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) { const q = (Math.min(h - 1, Math.max(0, y + j)) * w + Math.min(w - 1, Math.max(0, x + i))) * 4; buf[0].push(data[q]); buf[1].push(data[q + 1]); buf[2].push(data[q + 2]); } const m = buf[0].length >> 1; const i = (y * w + x) * 4; o[i] = buf[0].sort((a, b) => a - b)[m]; o[i + 1] = buf[1].sort((a, b) => a - b)[m]; o[i + 2] = buf[2].sort((a, b) => a - b)[m]; o[i + 3] = data[i + 3]; }
@@ -101,7 +101,7 @@ export const FILTERS = {
     run: (img) => { const { data, width: w, height: h } = img; const o = new Uint8ClampedArray(data.length); const g = (x, y, c) => data[(Math.min(h - 1, Math.max(0, y)) * w + Math.min(w - 1, Math.max(0, x))) * 4 + c]; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; for (let c = 0; c < 3; c++) { const gx = -g(x - 1, y - 1, c) - 2 * g(x - 1, y, c) - g(x - 1, y + 1, c) + g(x + 1, y - 1, c) + 2 * g(x + 1, y, c) + g(x + 1, y + 1, c); const gy = -g(x - 1, y - 1, c) - 2 * g(x, y - 1, c) - g(x + 1, y - 1, c) + g(x - 1, y + 1, c) + 2 * g(x, y + 1, c) + g(x + 1, y + 1, c); o[i + c] = 255 - Math.sqrt(gx * gx + gy * gy); } o[i + 3] = data[i + 3]; } return o; },
   },
   oil: {
-    label: 'Oil Paint', group: 'Stylize', controls: [S('radius', 'Brush size', 1, 6, 1, 3), S('levels', 'Detail', 4, 40, 1, 20)],
+    label: 'Oil Paint', group: 'Stylize', slow: true, controls: [S('radius', 'Brush size', 1, 6, 1, 3), S('levels', 'Detail', 4, 40, 1, 20)],
     run: (img, p) => {
       const { data, width: w, height: h } = img; const o = new Uint8ClampedArray(data.length); const R = p.radius, L = p.levels; const cnt = new Int32Array(L), sr = new Int32Array(L), sg = new Int32Array(L), sb = new Int32Array(L);
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { cnt.fill(0); sr.fill(0); sg.fill(0); sb.fill(0); for (let j = -R; j <= R; j++) { const yy = Math.min(h - 1, Math.max(0, y + j)); for (let i = -R; i <= R; i++) { const q = (yy * w + Math.min(w - 1, Math.max(0, x + i))) * 4; const lv = Math.min(L - 1, ((data[q] + data[q + 1] + data[q + 2]) / 3 * L / 256) | 0); cnt[lv]++; sr[lv] += data[q]; sg[lv] += data[q + 1]; sb[lv] += data[q + 2]; } } let best = 0; for (let k = 1; k < L; k++) if (cnt[k] > cnt[best]) best = k; const i = (y * w + x) * 4; o[i] = sr[best] / cnt[best]; o[i + 1] = sg[best] / cnt[best]; o[i + 2] = sb[best] / cnt[best]; o[i + 3] = data[i + 3]; }
@@ -133,6 +133,8 @@ export const FILTERS = {
     run: (img, p) => { const b = gaussian(img, p.blur), d = img.data, o = new Uint8ClampedArray(d.length); const { width: w, height: h } = img; for (let y = 0; y < h; y++) { const dist = Math.abs(y / h * 100 - p.focus); const t = Math.max(0, Math.min(1, (dist - p.band / 2) / Math.max(1, p.band))); for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; for (let c = 0; c < 4; c++) o[i + c] = d[i + c] * (1 - t) + b[i + c] * t; } } return o; },
   },
 };
+/* controls measured in pixels: the dialog previews a shrunken copy, so these are scaled down to match what OK will do at full size */
+export const PX = { gaussian: ['radius'], motion: ['distance'], unsharp: ['radius'], pixelate: ['size'], ripple: ['amount', 'size'], tiltShift: ['blur'], clouds: ['scale'] };
 export const FILTER_GROUPS = ['Blur', 'Sharpen', 'Noise', 'Stylize', 'Distort', 'Render'];
 export function filterDefaults(kind) { const f = FILTERS[kind], p = {}; for (const c of f.controls) p[c.key] = c.def; for (const [k, , d] of f.flags || []) p[k] = d; return p; }
 export { clamp8 };

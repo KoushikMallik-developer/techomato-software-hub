@@ -479,7 +479,7 @@ export default function PhotoApp() {
       {dlg?.k === 'export' && <ExportDialog doc={doc} onClose={() => setDlg(null)} onExport={exportImage} />}
       {dlg?.k === 'size' && <ImageSizeDialog doc={doc} onClose={() => setDlg(null)} onApply={(w, h) => { doc.resizeImage(w, h); setDlg(null); setTimeout(() => fit(), 0); }} />}
       {dlg?.k === 'canvas' && <CanvasSizeDialog doc={doc} onClose={() => setDlg(null)} onApply={(w, h, ax, ay) => { doc.resizeCanvas(w, h, ax, ay); setDlg(null); setTimeout(() => fit(), 0); }} />}
-      {dlg?.k === 'effect' && <EffectDialog doc={doc} kind={dlg.kind} isFilter={dlg.isFilter} onClose={() => setDlg(null)} onApply={(p) => { if (dlg.isFilter) doc.applyFilter(dlg.kind, p); else doc.bakeAdjustment(dlg.kind, p); setDlg(null); }} />}
+      {dlg?.k === 'effect' && <EffectDialog doc={doc} kind={dlg.kind} isFilter={dlg.isFilter} onClose={() => setDlg(null)} onApply={async (p) => { if (dlg.isFilter && FILTERS[dlg.kind].slow && doc.w * doc.h > 4e6 && !(await askConfirm('Slow filter', 'This can take a minute on a large image, and the page will not respond until it finishes. Continue?'))) return; if (dlg.isFilter) doc.applyFilter(dlg.kind, p); else doc.bakeAdjustment(dlg.kind, p); setDlg(null); }} />}
       {dlg?.k === 'style' && <StyleDialog layer={dlg.L} onClose={() => setDlg(null)} onApply={(st) => { doc.setProps(dlg.L, { style: st }, 'Layer style'); setDlg(null); }} />}
       {dlg?.k === 'keys' && <ShortcutsDialog onClose={() => setDlg(null)} />}
       {toastNode}{askNode}

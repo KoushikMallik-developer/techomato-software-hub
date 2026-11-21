@@ -5,7 +5,7 @@ import { Modal, useToast, useAsk, useContextMenu } from '../components/fxui.jsx'
 import { StudioMenu, Num, Row, PanelBox, ColorField, useHotkeys, useRaf, useHistory, uid, clamp } from '../components/studio.jsx';
 import { idbGet, idbSet } from '../lib/idb.js';
 import { downloadFile, pickFile, pickFiles, safeName, readAsText } from '../lib/download.js';
-import { schedule, renderMix, renderThrough, encodeWav, generate, mkBuffer, bufferChannels, peaks, peakOf, rmsOf, resample, spectrogram, projectEnd, defaultFx, FX_NAMES, dbToGain, gainToDb } from './audio/engine.js';
+import { schedule, renderMix, renderThrough, encodeWav, generate, mkBuffer, bufferChannels, peaks, peakOf, rmsOf, resample, spectrogram, projectEnd, validProject, defaultFx, FX_NAMES, dbToGain, gainToDb } from './audio/engine.js';
 import { blankProject, mkTrack, mkClip, findClip, mapClips, trimL, trimR, splitClip, fmtClock, niceStep, TRACK_COLORS } from './audio/model.js';
 import '../styles/audio.css';
 
@@ -225,13 +225,16 @@ export default function AudioApp() {
   const blobB64 = (blob) => new Promise((r) => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(',')[1]); fr.readAsDataURL(blob); });
   const saveProject = async () => { const used = new Set(P.tracks.flatMap((t) => t.clips.map((c) => c.src))); const sources = []; for (const id of used) { const s = srcs.current.get(id); if (s) sources.push({ id, name: s.name, wav: await blobB64(encodeWav(s.buf, 32)) }); } downloadFile(`${safeName(P.name)}.audio.json`, JSON.stringify({ kind: 'techomato-audio', v: 1, project: P, sources }), 'application/json'); toast('Session saved'); };
   const openProject = async (f) => {
-    try { const o = JSON.parse(await readAsText(f)); if (o.kind !== 'techomato-audio') throw new Error('x'); const ctx = ensureCtx(); srcs.current = new Map(); for (const s of o.sources) { const ab = Uint8Array.from(atob(s.wav), (c) => c.charCodeAt(0)).buffer; srcs.current.set(s.id, { name: s.name, buf: await ctx.decodeAudioData(ab) }); } pause(); h.reset(o.project); setSel([]); setSelTrack(o.project.tracks[0].id); seek(0); toast('Session opened'); } catch { toast('That is not a Techomato Audio session'); }
+    try { const o = JSON.parse(await readAsText(f)); if (o.kind !== 'techomato-audio' || !Array.isArray(o.sources) || !validProject(o.project)) throw new Error('x'); const ctx = ensureCtx(); const next = new Map(); for (const s of o.sources) { const ab = Uint8Array.from(atob(s.wav), (c) => c.charCodeAt(0)).buffer; next.set(s.id, { name: s.name, buf: await ctx.decodeAudioData(ab) }); }
+      /* only touch the live session once the whole file has decoded */
+      if (P.tracks.some((t) => t.clips.length) && !(await ask({ title: 'Open session', message: 'Replace the current session? Unsaved changes will be lost.', okText: 'Open' }))) return;
+      srcs.current = next; pause(); h.reset(o.project); setSel([]); setSelTrack(o.project.tracks[0].id); seek(0); toast('Session opened'); } catch { toast('That is not a Techomato Audio session'); }
   };
   const newSession = async () => { if (!(await ask({ title: 'New session', message: 'Start an empty session? Unsaved changes will be lost.', okText: 'Start new' }))) return; pause(); srcs.current = new Map(); const b = blankProject(); h.reset(b); setSel([]); setSelTrack(b.tracks[0].id); seek(0); };
 
   /* autosave */
   const restored = useRef(false); const saveT = useRef(0);
-  useEffect(() => { (async () => { try { const r = await idbGet('audio-project'); if (r && r.project && r.sources) { const ctx = ensureCtx(); for (const s of r.sources) srcs.current.set(s.id, { name: s.name, buf: mkBuffer(s.ch, s.sr) }); void ctx; h.reset(r.project); setSelTrack(r.project.tracks[0].id); toast('Restored your last session'); } } catch { /* ignore */ } restored.current = true; })(); }, []); // eslint-disable-line
+  useEffect(() => { (async () => { try { const r = await idbGet('audio-project'); if (r && validProject(r.project) && r.sources) { const ctx = ensureCtx(); for (const s of r.sources) srcs.current.set(s.id, { name: s.name, buf: mkBuffer(s.ch, s.sr) }); void ctx; h.reset(r.project); setSelTrack(r.project.tracks[0].id); toast('Restored your last session'); } } catch { /* ignore */ } restored.current = true; })(); }, []); // eslint-disable-line
   useEffect(() => {
     if (!restored.current) return undefined; clearTimeout(saveT.current); setSave('Unsaved changes');
     saveT.current = setTimeout(async () => { const used = new Set(P.tracks.flatMap((t) => t.clips.map((c) => c.src))); const sources = []; for (const id of used) { const s = srcs.current.get(id); if (s) sources.push({ id, name: s.name, sr: s.buf.sampleRate, ch: bufferChannels(s.buf) }); } const ok = await idbSet('audio-project', { project: P, sources }); setSave(ok ? 'Autosaved' : 'Autosave unavailable'); }, 2500);

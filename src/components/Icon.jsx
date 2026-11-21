@@ -238,4 +238,3 @@ export default function Icon({ name, size = 16, className = '', style }) {
   );
 }
 
-export const iconNames = Object.keys(I);
